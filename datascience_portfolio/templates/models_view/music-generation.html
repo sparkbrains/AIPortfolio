@@ -13,6 +13,19 @@
     position: absolute;
     }
 </style>
+<style>
+   .overlay {
+      background-color:#EFEFEF;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      top: 0px;
+      left: 0px;
+      opacity: .5; /* in FireFox */ 
+      filter: alpha(opacity=50); /* in IE */
+  }
+</style>
       
 
 <div id="layoutSidenav_content">
@@ -116,6 +129,9 @@
    else 
    {
    $("#spinner_div").show();
+   var div= document.createElement("div");
+    div.className += "overlay";
+    document.body.appendChild(div);
    return true; 
    }
    }
