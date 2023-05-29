@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div id="layoutSidenav_content">
+<main>
+   <div class="container-fluid px-4">
+      <h1 class="mt-4">
+         Stock Prediction 
+      </h1>
+      <ol class="breadcrumb mb-4">
+         <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+         <li class="breadcrumb-item active"> Stock Market Prediction </li>
+      </ol>
+      <div class="card mb-4">
+         <div class="card-body">
+            <p class="mb-0">
+               Upload file below.
+         </div>
+      </div>
+      <div id="error_div" class="alert alert-primary" style="display:none;" role="alert">
+         Please Upload the file, File cannot be empty.
+      </div>
+      <div class="card mb-4">
+         <div class="card-body">
+            <p class="mb-0">
+            <div class="heading animated zoomInDown delay-0.5s">
+               <h1>File</h1>
+               <h3>Select CSV File</h3>
+            </div>
+            <form id="file-upload-form" name="form1" onsubmit="return Spinner()"  action="{% url 'stock_prediction' %}" method="POST" id="image-form" enctype="multipart/form-data" class="uploader">
+               {% csrf_token %}
+               <input id="file-upload" type="file" id="csv_upload" name="csv_upload" accept=".csv"/>
+               <label for="file-upload" id="file-drag" class="anim   ated wow zoomInUp delay-1s">
+                  <img id="file-image" src="#" alt="Preview" class="hidden">
+                  <div id="start">
+                     <i class="fa fa-download" aria-hidden="true"></i>
+                     <div>Upload CSV file only.</div>
+                     <div id="notimage" class="hidden">Please select an image</div>
+                     <span id="file-upload-btn" class="btn btn-">Select a file</span>
+                  </div>
+                  <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
+                     <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <div id="response" class="hidden">
+                     <div id="messages"></div>
+                     <progress class="progress" id="file-progress" value="0">
+                     <span>0</span>%
+                     </progress>
+                     <div class="copyURL">
+                        <input type="text" id="myInput" class="formtext" placeholder="File URL" value=" ">
+                        <button   type="submit" class="formbtn">Submit</button>
+                     </div>
+                  </div>
+               </label>
+               <button  type="submit" class="formbtn">Submit</button>
+            </form>
+         </div>
+      </div>
+      {% if resulted_image %}
+      <div class="row">
+         <div class="col-lg-6">
+               
+                  <div class="card-header">
+                     <i class="fas fa-table me-1"></i>
+                     Predicted Data
+                  </div>
+                  <div class="card-body">
+                     <table id="datatablesSimple">
+                        <thead>
+                           <tr>
+                              <th>Predicted Data</th>
+                              <th>Time</th>
+                           </tr>
+                        </thead>
+                        <tfoot>
+                           <tr>
+                              <th>Predicted Data</th>
+                              <th>Time</th>
+                           </tr>
+                        </tfoot>
+                        <tbody>
+                           {% for result in predicted_result %}
+                           <tr>
+                              <td>{{result.1}}</td>
+                              <td>{{result.0}}</td>
+                           </tr>
+                           {% endfor %}
+                        </tbody>
+                     </table>
+            </div>
+         </div>
+         <div class="col-lg-6">
+               <div class="card-header">
+                  <i class="fas fa-chart-pie me-1"></i>
+                  Predicted Figure  
+               </div>
+                  <img src="{% static 'stock_prediction/' %}{{resulted_image}}"  id="preview" class="img-thumbnail" style="height: 52%;width: 100%;">
+               <div class="card-footer small text-muted">
+               </div>
+            </div>
+      </div>
+      {% endif %}
+   </div>
+
+</main>
+</div>
+<script> 
+   function Spinner()
+   {
+   var empt = document.forms["form1"]["csv_upload"].value;
+   if (empt == "")
+   {
+   $("#error_div").show();
+   return false;
+   }
+   else 
+   {
+   $("#spinner_div").show();
+   return true; 
+   }
+   }
+</script>  
+{% endblock %}

@@ -1,0 +1,111 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div id="layoutSidenav_content">
+   <main>
+      <div class="container-fluid px-4">
+         <h1 class="mt-4">
+            Semantic Segmentation         </h1>
+         <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+            <li class="breadcrumb-item active"> Semantic Segmentation</li>
+         </ol>
+         <div class="card mb-4">
+            <div class="card-body">
+               <p class="mb-0">
+                  Upload file below.
+            </div>
+         </div>
+         <div class="card mb-4">
+            <div class="card-body">
+               <p class="mb-0">
+               <div class="heading animated zoomInDown delay-0.5s">
+                  <h1>File</h1>
+                  <h3>Select Image File</h3>
+               </div>
+               <form id="file-upload-form" name="form1" onsubmit="return Spinner()"  action="{% url 'semantic_segmentation' %}" method="POST" id="image-form" enctype="multipart/form-data" class="uploader">
+                  {% csrf_token %}
+                  <input id="file-upload" type="file" name="upload_image"accept="image/png, image/JPG, image/jpeg" />
+                  <label for="file-upload" id="file-drag" class="animated wow zoomInUp delay-1s">
+                     <img id="file-image" src="#" alt="Preview" class="hidden">
+                     <div id="start">
+                        <i class="fa fa-download" aria-hidden="true"></i>
+                        <div>Upload only JPG ad PNG image.</div>
+                        <div id="notimage" class="hidden">Please select an image</div>
+                        <span id="file-upload-btn" class="btn btn-">Select a file</span>
+                     </div>
+                     <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                     <div id="response" class="hidden">
+                        <div id="messages"></div>
+                        <progress class="progress" id="file-progress" value="0">
+                        <span>0</span>%
+                        </progress>
+                        <div class="copyURL">
+                           <input type="text" id="myInput" class="formtext" placeholder="File URL" value=" ">
+                           <button type="submit" class="formbtn">Submit</button>
+                        </div>
+                     </div>
+                  </label>
+                  <button  type="submit" class="formbtn">Submit</button>
+               </form>
+            </div>
+         </div>
+      </div>
+      
+      {% if image_paths %}
+      <div class="row">
+         <div class="col-lg-6">
+            <div class="card mb-4 card_size">
+               <div class="card-header">
+                  Uploaded Image
+               </div>
+               <div class="card-body">
+                 <center> <img src="{{image_path.image.url}}" id="preview" class="img-thumbnail"></center>
+                </div>
+               <div class="card-footer small text-muted">Uploaded Image</div>
+            </div>
+         </div>
+         <div class="col-lg-6">
+            <div class="card mb-4 card_size">
+               <div class="card-header">
+                  <i class="fas fa-chart-pie me-1"></i>
+                  Final Image  
+               </div>
+               <div class="card-body">
+                  <center>   <img src="{% static '' %}{{image_paths}}" id="preview" class="img-thumbnail"></center>
+                </div>
+               <div class="card-footer small text-muted">
+                  Final Image  
+
+               </div>
+            </div>
+         </div>
+      </div>
+      {% endif %}
+
+   </main>
+</div>
+
+<script> 
+
+   function Spinner()
+  {
+  var empt = document.forms["form1"]["upload_image"].value;
+  if (empt == "")
+  {
+  alert("Please input a Value");
+  return false;
+  }
+  else 
+  {
+  $("#spinner_div").show();
+  return true; 
+  }
+  }
+  </script>  
+  
+
+{% endblock %}
