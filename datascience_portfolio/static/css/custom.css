@@ -25,6 +25,8 @@
   -ms-user-select: none;
   user-select: none;
   margin-bottom: 50px;
+  margin-left: 29px;
+
 }
 .uploader label:hover {
   border-color: #EC407A;
@@ -165,3 +167,6 @@
 .form:hover{
   color: #454cad;
 }
+
+
+

@@ -9,12 +9,11 @@ from .ML_Models.music_convertor import music_conversion
 from .ML_Models.stock_prediction import predict_stock_prices
 from .ML_Models.paraphrasing import get_paraphrased_sentences
 from .ML_Models.chatGPT import get_completion_from_messages
-from .form import UploadImageForm
 from django.urls import reverse
 
 
-def Index(request):
-    return render(request, 'index.html')
+# def Index(request):
+#     return render(request, 'index.html')
 
 
 class CustomObjectDetection(View):
@@ -42,10 +41,7 @@ class Summarising(View):
     def post(self, request, *args, **kwargs):
         raw_text = request.POST.get('user_input')
         result= summarizer(raw_text)
-        print(result,"resultresult")
-
         (summary, t1, raw_text_length,summary_len) = result
-     
         return render(request,'models_view/summarising.html',{'summary':summary,"raw_text":raw_text,"summary_len":summary_len,"raw_text_length":raw_text_length})
 
 
@@ -117,7 +113,7 @@ class StockPredictions(View):
         )
         path = upload_object.stock_file.path
         plot_image_name = "graph.png"
-        predicted_result = predict_stock_prices(path,plot_image_name, n_periods=30)
+        predicted_result = predict_stock_prices(path,plot_image_name, n_periods=int(request.POST.get('days')))
         return render(request,'models_view/stock-prediction.html',{"predicted_result":predicted_result,"resulted_image":plot_image_name})
 
 
@@ -130,7 +126,6 @@ class Paraphrasing(View):
     def post(self, request, *args, **kwargs):
         senetence = request.POST.get('user_input') 
         resulted_sentence=get_paraphrased_sentences(senetence)
-        print(resulted_sentence,">>>>>>>>>>>>>")
         return render(request,'models_view/paraphrasing.html',{"resulted_sentence":resulted_sentence,"raw_text":senetence})
 
 
@@ -144,7 +139,8 @@ class ChatGPT(View):
      
         message = request.POST.get('message')
         response=get_completion_from_messages(message)
-        return redirect(reverse('chat_gpt') + '?response='+response)
+        return render(request,'models_view/chatgpt.html',{"response":response})
+
 
 
 

@@ -131,7 +131,6 @@ def add_instruments(m, pattern, prediction_output):
                        
                     if i == 'Percussion':
                         output_notes.append(instrument.Percussion())
-                        
                     if i == 'AcousticBass':
                         output_notes.append(instrument.AcousticBass())
                     if i =="Flute":

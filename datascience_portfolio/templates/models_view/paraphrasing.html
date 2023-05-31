@@ -67,7 +67,7 @@
                         <i class="fas fa-chart-bar me-1"></i>
                         Raw Text
                     </div>
-                    <div class="card-body">{{raw_text}}</canvas></div>
+                    <div class="card-body">{{raw_text}}</div>
                     <div class="card-footer small text-muted"> Raw Text
                     </div>
                 </div>
@@ -75,17 +75,16 @@
             <div class="col-lg-6">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <i class="fas fa-chart-pie me-1"></i>
+                        <i class="fas fa-chart-bar me-1"></i>
                         Output
+                       </div>
+                    <div class="card-body">{{resulted_sentence}}</div>
+                    <div class="card-footer small text-muted"> Output
                     </div>
-                    <div class="card-body">
-                        {% for sentence in resulted_sentence %}
-                        . {{sentence}}<br>
-                        {% endfor %}
-                        <br>
-                    <div class="card-footer small text-muted">Output</div>
                 </div>
             </div>
+
+          
         </div>
       </div>
       {% endif %}

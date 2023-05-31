@@ -34,7 +34,7 @@
             Summarising
          </h1>
          <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
             <li class="breadcrumb-item active"> Summarising</li>
          </ol>
          <div id="error_div" class="alert alert-primary" style="display:none;" role="alert">
@@ -73,7 +73,7 @@
                         Your Summary
                     </div>
                     <div class="card-body">{{raw_text}}</canvas></div>
-                    <div class="card-footer small text-muted">{{raw_text_length}}</div>
+                    {% comment %} <div class="card-footer small text-muted">{{raw_text_length}}</div> {% endcomment %}
                 </div>
             </div>
             <div class="col-lg-6">
@@ -83,7 +83,7 @@
                         Final Summary
                     </div>
                     <div class="card-body">{{summary}}</div>
-                    <div class="card-footer small text-muted">Reduced length : {{summary_len}}</div>
+                    {% comment %} <div class="card-footer small text-muted">Reduced length : {{summary_len}}</div> {% endcomment %}
                 </div>
             </div>
         </div>

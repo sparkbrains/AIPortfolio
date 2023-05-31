@@ -21,13 +21,14 @@
             Object Classification
          </h1>
          <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
             <li class="breadcrumb-item active"> Object Classification</li>
          </ol>
          <div class="card mb-4">
             <div class="card-body">
                <p class="mb-0">
-                  Upload file below.
+                  Upload file below.<a href="{% static '' %}sample datasets/object-classification.zip" ><button style="float:right" type="submit" class="formbtn">Download Sample Dataset
+                  </button></a>
             </div>
          </div>
          <div id="error_div" class="alert alert-primary" style="display:none;" role="alert">
@@ -42,7 +43,7 @@
                </div>
                <form id="file-upload-form" name="form1" onsubmit="return Spinner()" action="{% url 'object_classification' %}" method="POST" id="image-form" enctype="multipart/form-data" class="uploader">
                   {% csrf_token %}
-                  <input id="file-upload" type="file" name="upload_image" accept="image/png, image/JPG, image/jpeg" / >
+                  <input id="file-upload" type="file"  onchange="DisplayImage(event)"name="upload_image" accept="image/png, image/JPG, image/jpeg" / >
                   <label for="file-upload" id="file-drag" class="animated wow zoomInUp delay-1s">
                      <img id="file-image" src="#" alt="Preview" class="hidden">
                      <div id="start">
@@ -50,6 +51,9 @@
                         <div>Upload only JPG ad PNG image.</div>
                         <div id="notimage" class="hidden">Please select an image</div>
                         <span id="file-upload-btn" class="btn btn-">Select a file</span>
+                        <p><img id="output" width="200" /></p>
+
+                        
                      </div>
                      <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
                         <span class="visually-hidden">Loading...</span>
@@ -65,7 +69,7 @@
                         </div>
                      </div>
                   </label>
-                  <button  type="submit" class="formbtn">Submit</button>
+                  <button  type="submit" class="formbtn btn-css">Submit</button>
                </form>
             </div>
          </div>
@@ -79,7 +83,6 @@
                   Uploaded Image
                </div>
                <div class="card-body">
-                  {% comment %} <img src="{% static '' %}{{request.GET.image}}" id="preview" class="img-thumbnail"> {% endcomment %}
                   <center><img src="{{image_obj.image.url}}" id="preview" class="img-thumbnail"> </center>
                </div>
                <div class="card-footer small text-muted">Uploaded Image</div>

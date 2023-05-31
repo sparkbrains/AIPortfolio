@@ -1,5 +1,5 @@
 import openai
-openai.api_key = "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"
+openai.api_key = "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"
 
 def get_completion_from_messages(message):
     chat_models = "gpt-3.5-turbo" 

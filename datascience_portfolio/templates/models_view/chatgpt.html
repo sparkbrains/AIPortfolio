@@ -34,7 +34,7 @@
             ChatpGPT
          </h1>
          <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
             <li class="breadcrumb-item active"> ChatpGPT</li>
          </ol>
          <div id="error_div" class="alert alert-primary" style="display:none;" role="alert">
@@ -63,7 +63,6 @@
             <div class="col-lg-12">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <i class="fas fa-chart-bar me-1"></i>
                         Response
                     </div>
                     <div class="card-body">{{response}}</canvas></div>
@@ -89,10 +88,10 @@
  }
  else 
  {
- $("#spinner_div").show();
+ {% comment %} $("#spinner_div").show();
  var div= document.createElement("div");
     div.className += "overlay";
-    document.body.appendChild(div);
+    document.body.appendChild(div); {% endcomment %}
  return true; 
  }
  }
