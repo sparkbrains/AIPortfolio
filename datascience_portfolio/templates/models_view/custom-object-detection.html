@@ -1,54 +1,45 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% block extrascript %}
+<script src="{% static 'js/custom-object-detection.js' %}"></script>
+<link href="{% static 'css/custom-object-detection.css' %}" rel="stylesheet" />
+{% endblock %}
 {% block content %}
-<style>
-   .overlay {
-      background-color:#EFEFEF;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-      top: 0px;
-      left: 0px;
-      opacity: .5; /* in FireFox */ 
-      filter: alpha(opacity=50); /* in IE */
-  }
-</style>
+
 <div id="layoutSidenav_content">
    <main>
       <div class="container-fluid px-4">
-         <h1 class="mt-4">
+         <h1 class="mt-4 heading-color">
             Factory Related Custom Object Detection
          </h1>
          <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item"><a href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
+            <li class="breadcrumb-item"><a style="color:#337e50" href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
             <li class="breadcrumb-item active"> Factory Related Custom Object Detection</li>
          </ol>
-         <div class="card mb-4 ">
-            <div class="card-body">
-               <p class="mb-0">
-                  Upload file below.<a href="{% static '' %}sample datasets/custom_object_detection.zip" ><button style="float:right" type="submit" class="formbtn">Download Sample Dataset
-                  </button></a>
+         {% if not image %}
+
+         <div class="card card box-shadow  mx-auto my-5 border-color" >
+            <h5 class="card-header heading-color">Description</h5>
+            <div class="card-body card-bg">
+               <h5 class="card-title">Factory Related Custom Object Detection</h5>
+               <p class="card-text">In this project, we have custom trained our model on 1200 images for detection of safety measures on construction sites ensuring that workers are wearing the necessary safety equipment.<br><br>
+                  <b><i>Input</i></b> - image of workers from construction site <br>
+                  <b><i>Output</i></b> -  detected image with SafetyHat or SafetyVest and a table of detected items.
+                  </p>
             </div>
-
-      
          </div>
-
-         <div id="error_div" class="alert alert-primary" style="display:none;" role="alert">
-            Please Upload the file, File cannot be empty.
-         </div>
-         
-         <div class="card mb-4">
-            <div class="card-body">
+       
+         <div class="card mb-4 card box-shadow mx-auto my-5 border-color">
+            <div class="card-body" style="background: #f9f9f9;">
                <p class="mb-0">
+                  <a href="{% static '' %}sample datasets/custom_object_detection.zip/" ><button style="float:right" type="submit" class="formbtn">Sample Dataset
+                  </button></a>
                <div class="heading animated zoomInDown delay-0.5s">
-                  <h1>File</h1>
-                  <h3>Select Image File</h3>
+                 
                </div>
                <form name="form1" onsubmit="return Spinner()" autocomplete="off" action="{% url 'custom_object_detection' %}" method="POST" id="image-form" enctype="multipart/form-data" class="uploader" >
                   {% csrf_token %}
-                  <input id="file-upload" type="file" id="upload_image" onchange="DisplayImage(event)" name="upload_image" accept="image/png, image/JPG, image/jpeg">
+                  <input id="file-upload" type="file"  onchange="DisplayImage(event);ImageFormatValidate();"  name="upload_image" accept="image/png, image/JPG, image/jpeg">
                   <label for="file-upload" id="file-drag" class="animated wow zoomInUp delay-1s">
                      <img id="file-image" src="#" alt="Preview" class="hidden">
                      <div id="start">
@@ -57,100 +48,134 @@
                         <div id="notimage" class="hidden">Please select an image</div>
                         <span id="file-upload-btn" class="btn btn-">Select a file</span>
                         <p><img id="output" width="200" /></p>
-
                      </div>
-                     <div   class="spinner-border m-5 "  style="display: none;" role="status">
+                     <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
                         <span class="visually-hidden">Loading...</span>
-                      </div>
-                      
-                     <div id="response" class="hidden">
-                        <div id="messages"></div>
-                        <progress class="progress" id="file-progress" value="0">
-                        <span>0</span>%
-                        </progress>
-                        <div class="copyURL">
-                           <input type="text" id="myInput" class="formtext" placeholder="File URL" value=" ">
-                           
-                           <button type="submit" class="formbtn">Submit</button>
-                        </div>
-                        
                      </div>
                      
+                
+                     <span id="error_div" style="display: none;color:red;">Please Upload the file, File cannot be empty.</span>
+                     <span id="image_error" style="display: none;color:red;">Please Upload the JPG and PNG only</span>
+
                   </label>
-                     <button type="submit" class="formbtn btn-css">Submit</button>
-
+                  
+                  <button id="submit-button" onlclick="Spinner()" type="submit" class="formbtn btn-css">Submit</button>
                </form>
+               
             </div>
          </div>
-
+         
+         {% endif %}
+      
          {% if image %}
-         <div class="row">
-            <div class="col-lg-6">
-               <div class="card mb-4 card_size">
 
-                  <div class="card-header">
-                     Uploaded Image
-                  </div>
-                  <div class="card-body" >
-                     <center> <img src="{{image.image.url}}" id="preview" class="img-thumbnail"></center>
-                  </div>
-                  <div class="card-footer small text-muted">Uploaded Image</div>
+         <div class="row ">
+            <div class="col-sm-12">
+               <a href="{% url 'custom_object_detection' %}"><button type="submit" class="formbtn ">Upload again</button><a/>
             </div>
-         </div>
+            <br><br>
+            
+          <section id="gallery">
+            <div class="container-fluid">
+              <div class="row">
+              <div class="col-lg-6 mb-6">
+              <div class="card border-color" >
+                <img src="{{image.image.url}}" alt="" class="card-img-top img-size">
+                <div class="card-body card-bg">
+                  <h5 class="card-title ">Uploaded Image</h5>
+                
+                </div>
+               </div>
+              </div>
+           
+              <div class="col-lg-6 mb-6">
+              <div class="card border-color ">
+               {% if custom_object_detection %}
+                <img src="{% static '' %}{{custom_object_detection}}" alt="" class="card-img-top img-size">
+                {% comment %} <div class="card-body border-color">
+                  <h5 class="card-title ">Output </h5>
+                  <span class="card-title">Safetyhelmet : {{count.0}}</span><br>
+                  <span class="card-title">Vest: {{count.1}}</span>
+                  <p class="card-text"></p>
+                </div> {% endcomment %}
+                <div class="card-body border-color card-bg">
 
-            <div class="col-lg-6">
-               <div class="card mb-4 card_size">
-                  <div class="card-header">
-                     <i class="fas fa-chart-pie me-1"></i>
-                     Final Image  
-                  </div>
-                  <div class="card-body">
-                     {% if  custom_object_detection %}
-                     <center><img src="{% static '' %}{{custom_object_detection}}" id="preview" class="img-thumbnail"></center>
-                     {% else %}
-                     <center><h3>No detection found</h3></center>
-                     {% endif %}
-              
-                  </div>
-                  {% if custom_object_detection %}
+                  <h5 class="card-title">Output </h5>
+                 </div>
+                {% else %}
+                <center>
+                  <br><br><br><br><br><br>
+                  <br><br><br><br><br>
+                   <h3>No Detection Found</h3>
+                   <br><br><br><br><br><br><br><br>
+                   <br><br><br>
+                </center>
+                <div class="card-body border-color card-bg">
 
-                  <div class="card-footer small text-muted">
-                     Final Image
+                <h5 class="card-title">No Detection Found </h5>
+               </div>
 
-                  </div>
-                  {% endif %}
+                {% endif %}
+             
 
                </div>
+              </div>
             </div>
-         </div>
-         {% endif %}
-      </div>
-     
+          </div>
+          </section>
 
+          {% endif %}
+
+      </div>
    </main>
 </div>
 
- <script> 
+<script> 
+   function Spinner()
+   {
+   var empt = document.forms["form1"]["upload_image"].value;
+   if (empt == "")
+   {
+   $("#error_div").show();
 
- function Spinner()
-{
-var empt = document.forms["form1"]["upload_image"].value;
-if (empt == "")
-{
-$("#error_div").show();
+   return false;
+   }
+   else 
+   {
+   $("#spinner_div").show();
+   $("#error_div").hide();
 
-return false;
-}
-else 
-{
-$("#spinner_div").show();
-var div= document.createElement("div");
-    div.className += "overlay";
-    document.body.appendChild(div);
-return true; 
-}
-}
+   var div= document.createElement("div");
+      div.className += "overlay";
+      document.body.appendChild(div);
+   return true; 
+   }
+   }
+
 </script>  
+
+<script>
+   function ImageFormatValidate(){
+      let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png'];
+      let type = document.getElementById('file-upload').files[0].type;
+      if(allowedExtension.indexOf(type)>-1)
+      {
+         $("#image_error").hide();
+         $("#submit-button").prop('disabled',false);
+         $("#output").show()
+         $("#error_div").hide();
+
+
+
+      }else{
+         $("#image_error").show();
+         $("#submit-button").prop('disabled',true);
+         $("#output").hide()
+           }
+           
+      }          
+      
+   </script>
+  
+
 {% endblock %}
-
-

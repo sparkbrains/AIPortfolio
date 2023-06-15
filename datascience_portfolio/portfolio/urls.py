@@ -1,7 +1,7 @@
 
 from django.urls import path
 # from .views import Index
-from .views import CustomObjectDetection,Summarising,SemanticSegmentation,ObjectClassification,MusicGenerationn,StockPredictions,Paraphrasing,ChatGPT
+from .views import CustomObjectDetection,Summarising,SemanticSegmentation,ObjectClassification,MusicGenerationn,StockPredictions,Paraphrasing,ChatGPT,MCQ
 
 
 urlpatterns = [
@@ -15,4 +15,6 @@ urlpatterns = [
     path('stock-prediction/', StockPredictions.as_view(), name='stock_prediction'),
     path('paraphrasing/', Paraphrasing.as_view(), name='paraphrasing'),
     path('chat-gpt/', ChatGPT.as_view(), name='chat_gpt'),
+    path('mcq/', MCQ.as_view(), name='mcq'),
+
 ]

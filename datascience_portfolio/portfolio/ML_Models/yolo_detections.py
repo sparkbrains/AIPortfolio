@@ -4,7 +4,7 @@ from django.conf import settings
 import os
 
 
-model = torch.hub.load(os.path.join(settings.BASE_DIR,"yolov5/"),'custom',path='yolov5/best.pt',source='local')
+model = torch.hub.load(os.path.join(settings.BASE_DIR,"yollo/"),'custom',path='yollo/best.pt',source='local')
 
 def yolo_detection(path,user_image):
 
@@ -19,7 +19,6 @@ def yolo_detection(path,user_image):
         detect.append(obj)
     for detection in detect:
         if len(detect) != 0:
-            print("ffffffffffffffffffff")
             classes.append(detection[6])
             # rect_coordinates = detection[:4]
             concatenated_image = Image.fromarray(results.render(image)[0])

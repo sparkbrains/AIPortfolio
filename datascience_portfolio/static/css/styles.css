@@ -6914,7 +6914,7 @@ textarea.form-control-lg {
 }
 
 .border-info {
-  border-color: #0dcaf0 !important;
+  border-color: #198754 !important;
 }
 
 .border-warning {
@@ -11459,6 +11459,9 @@ body {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
   position: relative;
+  font-weight:500;
+
+  
 }
 .sb-sidenav .sb-sidenav-menu .nav .nav-link .sb-nav-link-icon {
   font-size: 0.9rem;
@@ -11481,23 +11484,25 @@ body {
 }
 
 .sb-sidenav-dark {
-  background-color: #212529;
+  background-color: #eff8f4; /* side nav color change */
   color: rgba(255, 255, 255, 0.5);
 }
 .sb-sidenav-dark .sb-sidenav-menu .sb-sidenav-menu-heading {
   color: rgba(255, 255, 255, 0.25);
 }
 .sb-sidenav-dark .sb-sidenav-menu .nav-link {
-  color: rgba(255, 255, 255, 0.5);
+  color: #292929;
 }
 .sb-sidenav-dark .sb-sidenav-menu .nav-link .sb-nav-link-icon {
-  color: rgba(255, 255, 255, 0.25);
+  /* color: rgba(255, 255, 255, 0.25); */
+  color: black;
+
 }
 .sb-sidenav-dark .sb-sidenav-menu .nav-link .sb-sidenav-collapse-arrow {
   color: rgba(255, 255, 255, 0.25);
 }
 .sb-sidenav-dark .sb-sidenav-menu .nav-link:hover {
-  color: #fff;
+  color: #a6ce39;
 }
 .sb-sidenav-dark .sb-sidenav-menu .nav-link.active {
   color: #fff;
@@ -11702,17 +11707,15 @@ body {
 
 
 .card_size{
-  width: 40rem; 
-  height:40rem;
-  margin-left: 76px !important;
+  height: 33rem;
+    width: 45rem;
+    margin: 2rem;
 }
 
 .btn-css{
-  margin-left: 81%!important;
+  margin-left: 75%!important;
   margin-top: -35px!important;
 }
-
-
 
 
 
