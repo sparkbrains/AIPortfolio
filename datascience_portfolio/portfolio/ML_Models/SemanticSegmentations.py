@@ -26,10 +26,10 @@ from utils.torch_utils import select_device, smart_inference_mode
 
 def run(
         
-        weights=os.path.join(settings.BASE_DIR,'segmentation_yolo/yolov5/yolov5s-seg.pt/'),
+        weights=os.path.join(settings.BASE_DIR,'segmentation_yolo/yollo/yolov5s-seg.pt/'),
         source=None,  # file/dir/URL/glob/screen/0(webcam)  #Image 
         
-        data=os.path.join(settings.BASE_DIR,'segmentation_yolo/yolov5/data/coco128.yaml'),  # dataset.yaml path
+        data=os.path.join(settings.BASE_DIR,'segmentation_yolo/yollo/data/coco128.yaml'),  # dataset.yaml path
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
         iou_thres=0.45,  # NMS IOU threshold
