@@ -20,4 +20,12 @@ class StockPrediction(models.Model):
         upload_to="StockPrediction/", max_length=254, null=True, blank=True
     )
     
-   
+class Questions(models.Model):
+     number = models.CharField(max_length=255, null=True, blank=True)
+     questions = models.CharField(max_length=255, null=True, blank=True)
+     correct_answer = models.CharField(max_length=255, null=True, blank=True)
+     options = models.ManyToManyField("Options")
+
+
+class Options(models.Model):
+    options = models.CharField(max_length=255, null=True, blank=True)

@@ -17,40 +17,46 @@
 <div id="layoutSidenav_content">
 <main>
    <div class="container-fluid px-4">
-      <h1 class="mt-4">
+      <h1 class="mt-4 heading-color">
          Stock Prediction 
       </h1>
       <ol class="breadcrumb mb-4">
-         <li class="breadcrumb-item"><a href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
+         <li class="breadcrumb-item"><a a style="color:#337e50" href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
          <li class="breadcrumb-item active"> Stock Market Prediction </li>
       </ol>
-      <div class="card mb-4">
-         <div class="card-body">
-            <p class="mb-0">
-               Upload file below.<a href="{% static '' %}sample datasets/stock.zip" ><button style="float:right" type="submit" class="formbtn">Download Sample Dataset
-               </button></a>
+     
+{% if not resulted_image %}
+      <div class="card card box-shadow  mx-auto my-5 border-color" >
+         <h5 class="card-header heading-color">Description</h5>
+         <div class="card-body card-bg">
+            <h5 class="card-title">Stock prediction</h5>
+            <p class="card-text">In the stock prediction project, the goal is to create a function that can forecast future stock prices.<br><br>
+               <b><i>Input</i></b> - The function takes two inputs: a CSV file containing historical stock data and the number of days to predict. <br>
+               <b><i>Output</i></b> - The output of the function is a dataframe that contains the predicted stock prices for the given number of periods. This dataframe provides insights into the expected values of the stocks in the future.               </p>
          </div>
       </div>
-      <div id="error_div" class="alert alert-primary" style="display:none;" role="alert">
-         Please Upload the file and days in number, File cannot be empty.
-      </div>
-      <div class="card mb-4">
-         <div class="card-body">
+
+     
+     
+      <div class="card mb-4 card box-shadow mx-auto my-5 border-color">
+         <div class="card-body" style="background: #f9f9f9;">
             <p class="mb-0">
+               <a href="{% static '' %}sample datasets/stock.zip/" ><button style="float:right" type="submit" class="formbtn">Sample Dataset
+               </button></a>
             <div class="heading animated zoomInDown delay-0.5s">
-               <h1>File</h1>
-               <h3>Select CSV File</h3>
+              
             </div>
-            <form id="file-upload-form" name="form1" onsubmit="return Spinner()"  action="{% url 'stock_prediction' %}" method="POST" id="image-form" enctype="multipart/form-data" class="uploader">
+            <form name="form1" onsubmit="return Spinner()" autocomplete="off" action="{% url 'stock_prediction' %}" method="POST" id="image-form" enctype="multipart/form-data" class="uploader" >
                {% csrf_token %}
-               <input id="file-upload" type="file" id="csv_upload" name="csv_upload" accept=".csv"/>
-               <label for="file-upload" id="file-drag" class="anim   ated wow zoomInUp delay-1s">
+               <input id="file-upload" type="file"  onchange="ImageFormatValidate();"  name="csv_upload" accept=".csv"/>
+               <label for="file-upload" id="file-drag" class="animated wow zoomInUp delay-1s">
                   <img id="file-image" src="#" alt="Preview" class="hidden">
                   <div id="start">
                      <i class="fa fa-download" aria-hidden="true"></i>
                      <div>Upload CSV file only.</div>
                      <div id="notimage" class="hidden">Please select an image</div>
                      <span id="file-upload-btn" class="btn btn-">Select a file</span>
+                     <p><img id="output" width="200" /></p>
                      <p id ="file_name" ></p>
 
                   </div>
@@ -66,21 +72,35 @@
                         <input type="text" name="days" id="days" class="formtext" placeholder="Enter days in number" onkeypress="return /[0-9]/i.test(event.key)"/>
                      </div>
                   </div>
+                  
+             
+                  <span id="error_div" style="display: none;color:red;">Please Upload the file, File cannot be empty.</span>
+                  <span id="days_input_error" style="display: none;color:red;">Days field can not be blank.</span>
+
                </label>
-               <button  type="submit" class="formbtn btn-css">Submit</button>
+               
+               <button id="submit-button" onlclick="Spinner()" type="submit" class="formbtn btn-css">Submit</button>
             </form>
+            
          </div>
       </div>
-      {% if resulted_image %}
+
+{% endif %}
+{% if resulted_image %}
+      <div class="col-sm-12">
+         <a href="{% url 'stock_prediction' %}"><button type="submit" class="formbtn ">Upload again</button><a/>
+      </div>
+      <br><br>
       <div class="row">
+       
          <div class="col-lg-6">
                
-                  <div class="card-header">
-                     <i class="fas fa-table me-1"></i>
+                  <div class="card-header border-color card-title" style="background: #337e50;">
+                     <i class="fas fa-table me-1 " ></i>
                      Predicted Data
                   </div>
-                  <div class="card-body">
-                     <table id="datatablesSimple">
+                  <div class="card-body border-color">
+                     <table id="datatablesSimple" class="border-color">
                         <thead>
                            <tr>
                               <th>Predicted Data</th>
@@ -93,23 +113,24 @@
                               <th>Time</th>
                            </tr>
                         </tfoot>
-                        <tbody>
-                           {% for result in predicted_result %}
+                        <tbody class="border-color">
+            
+                          {% for result in predicted_result %}
                            <tr>
-                              <td>{{result.1}}</td>
-                              <td>{{result.0|safe}}</td>
+                              <td class="border-color">{{result.1}}</td>
+                              <td class="border-color">{{result.0|safe}}</td>
                            </tr>
-                           {% endfor %}
+                           {% endfor %} 
                         </tbody>
                      </table>
             </div>
          </div>
          <div class="col-lg-6">
-               <div class="card-header">
+               <div class="card-header border-color card-title"  style="background: #337e50;" >
                   <i class="fas fa-chart-pie me-1"></i>
                   Predicted Figure  
                </div>
-               <div class="card-body">
+               <div class="card-body border-color">
 
 
                   <img src="{% static 'stock_prediction/' %}{{resulted_image}}"  id="preview" class="img-thumbnail" style="height: 72%;width: 100%;">
@@ -117,30 +138,45 @@
             </div>
       </div>
       {% endif %}
+
+
+
+      
    </div>
 
 </main>
 </div>
+
 <script> 
    function Spinner()
    {
    var empt = document.forms["form1"]["csv_upload"].value;
    var n_days = document.forms["form1"]["days"].value;
-   if (empt == "" || n_days == "")
+   if (empt == "")
    {
    $("#error_div").show();
+   $("#days_input_error").hide();
+
    return false;
+   }
+
+   else if(n_days == ""){
+      $("#days_input_error").show();
+      $("#error_div").hide();
+
+      return false;
    }
    else 
    {
    $("#spinner_div").show();
+   $("#days_input_error").hide();
+   $("#error_div").hide();
    var div= document.createElement("div");
     div.className += "overlay";
     document.body.appendChild(div);
    return true; 
    }
    }
-
 
    $('#file-upload').change(function() {
       var i = $(this).prev('label').clone();

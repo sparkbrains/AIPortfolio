@@ -30,27 +30,45 @@
 <div id="layoutSidenav_content">
    <main>
       <div class="container-fluid px-4">
-         <h1 class="mt-4">
-            Summarising
+         <h1 class="mt-4 heading-color">
+            Summary
          </h1>
          <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item"><a href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
-            <li class="breadcrumb-item active"> Summarising</li>
+            <li class="breadcrumb-item"><a style="color:#337e50" href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
+            <li class="breadcrumb-item active "> Summarising</li>
          </ol>
-         <div id="error_div" class="alert alert-primary" style="display:none;" role="alert">
+         {% comment %} <div id="error_div" class="alert alert-primary" style="display:none;" role="alert">
             Please enter the text below.
+         </div> {% endcomment %}
+         {% if not summary %}
+
+         <div class="card card box-shadow  mx-auto my-5 border-color" >
+            <h5 class="card-header heading-color">Description</h5>
+            <div class="card-body card-bg">
+               <h5 class="card-title">Text Summarization</h5>
+               <p class="card-text">Text summarization is the process of generating a concise and coherent summary of a longer text, such as an article, document, or news story. It aims to capture the main points and key information of the original text in a condensed form.
+                The summary should provide a coherent and informative overview of the original text, highlighting the most important aspects and key details.Mainly we use NLTK Library for this.
+
+                <br><br>
+                  <b><i>Input</i></b> - The input to a text summarization system is typically a longer piece of text,. <br>
+                  <b><i>Output</i></b> -The output is a shorter summary that captures the essential content..<br><br>
+                  </p>
+            </div>
          </div>
-         <div class="card mb-4">
+
+         <div class="card mb-4 border-color ">
             <form name="form1" onsubmit="return Spinner()" action="{% url 'summarising' %}", method="POST">
                 {% csrf_token %}
-            <div class="card-body">
+            <div class="card-body ">
                <p class="mb-0">
                 <label for="exampleFormControlTextarea1" class="form-label">Enter the text below.
                 </label>
-                <textarea  id="user_input" name="user_input" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <textarea  id="user_input" name="user_input" class="form-control border-color" id="exampleFormControlTextarea1" rows="3"></textarea>
                 <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
                     <span class="visually-hidden">Loading...</span>
                   </div>
+                  <span id="error_div" style="display: none;color:red;">Field can not be empty.</span>
+
                   <br>
                   <button  type="submit" class="formbtn">Submit</button>
 
@@ -62,33 +80,47 @@
           </div>
 
          </div>
-
+            {% endif %}
         
-        {% if summary %}
-         <div class="row">
-            <div class="col-lg-6">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <i class="fas fa-chart-bar me-1"></i>
-                        Your Summary
-                    </div>
-                    <div class="card-body">{{raw_text}}</canvas></div>
-                    {% comment %} <div class="card-footer small text-muted">{{raw_text_length}}</div> {% endcomment %}
-                </div>
+      {% if summary %}
+      <div class="col-sm-12">
+        <a href="{% url 'summarising' %}"><button type="submit" class="formbtn ">Input Again</button><a/>
+     </div>
+     <br><br>
+      <section id="gallery">
+        <div class="container-fluid">
+          <div class="row">
+          <div class="col-lg-6 mb-6">
+          <div class="card border-color ">
+            <div class="card-body">{{raw_text}}</canvas></div>
+            <div class="card-body card-body card-bg">
+              <h5 class="card-title">Raw Text</h5>
+              <p class="card-text"></p>
+            
             </div>
-            <div class="col-lg-6">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <i class="fas fa-chart-pie me-1"></i>
-                        Final Summary
-                    </div>
-                    <div class="card-body">{{summary}}</div>
-                    {% comment %} <div class="card-footer small text-muted">Reduced length : {{summary_len}}</div> {% endcomment %}
-                </div>
+           </div>
+          </div>
+       
+          <div class="col-lg-6 mb-6">
+            <div class="card border-color ">
+            <div class="card-body">{{summary}}</canvas></div>
+            <div class="card-body card-body card-bg">
+              <h5 class="card-title">Summary</h5>
+              <p class="card-text"></p>
+            
             </div>
+           </div>
+
+           </div>
+           </div>
+          </div>
         </div>
       </div>
+      </section>
       {% endif %}
+
+
+
       
  
 
@@ -103,11 +135,12 @@
    if (empt == "")
    {
     $("#error_div").show();
+
     return false;
    }
    else 
    {
-   $("#spinner_div").show();
+   //$("#spinner_div").show();
    var div= document.createElement("div");
     div.className += "overlay";
     document.body.appendChild(div);

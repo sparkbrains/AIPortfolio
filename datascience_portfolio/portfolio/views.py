@@ -9,8 +9,10 @@ from .ML_Models.music_convertor import music_conversion
 from .ML_Models.stock_prediction import predict_stock_prices
 from .ML_Models.paraphrasing import get_paraphrased_sentences
 from .ML_Models.chatGPT import get_completion_from_messages
-from django.urls import reverse
+from .ML_Models.mcq import generate_questions_with_answers
 
+from django.http import JsonResponse
+import json
 
 # def Index(request):
 #     return render(request, 'index.html')
@@ -28,9 +30,13 @@ class CustomObjectDetection(View):
         user_image = "test.jpg"
         image_path = image_obj.image.path
         result= yolo_detection(image_path,user_image)
+        print(result,"??????????")
         if result:
             count,responded_image = result
-            return render(request,'models_view/custom-object-detection.html',{'count':count,"image":image_obj,"custom_object_detection":responded_image})
+            count_list =[]
+            for val in count.values():
+                count_list.append(val)
+            return render(request,'models_view/custom-object-detection.html',{'count':count_list,"image":image_obj,"custom_object_detection":responded_image})
         return render(request,'models_view/custom-object-detection.html',{"image":image_obj})
 
 
@@ -143,7 +149,58 @@ class ChatGPT(View):
 
 
 
+class MCQ(View):
+  
+    def get(self, request, *args, **kwargs):
+        return render(request,'models_view/mcq.html')
+    
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+                
+            questions_ob = Questions.objects
+            if request.POST.get('user_input'):
+                questions_ob.all().delete()
+                Options.objects.all().delete()
+                questions = generate_questions_with_answers(request.POST.get('user_input'), limit=10)
+                print(questions,">>>>>>>>>>>>>>>>>>>>>>>~")
+                for question in questions:
+                    options =  question['options']
+                    answer = question['answer']
+                    questions_obj = Questions.objects.create(
+                        number = question['question_number'],
+                        questions = question['question_text'],
+                        correct_answer = answer
+                    )
+                    opt = []
+                    for option in options:
+                        opt.append(Options.objects.create(
+                        options = option
+                    ))
 
+                    
+                    for options_value in opt:
+                        questions_obj.options.add(options_value)
+            
+                questions_ = questions_ob.all()  
+                questions_count = questions_.count()
+                return render(request,'models_view/mcq.html',{"questions":questions_, "count":questions_count})
+
+
+            if request.POST.get('request_type')=='ajax_request':
+                final_data=[]
+                question_ = request.POST.get('mcq_array')
+                question_=json.loads(question_)
+                for question in question_:
+                    question_id= question['question_id']
+                    answer= question['answer']
+                    question_obj = Questions.objects.get(id=question_id)
+                    correct = []
+                    if question_obj.correct_answer != answer:
+                        correct.append(question_obj.id)
+                    final_data.append(correct)
+                final_data = json.dumps(final_data)
+                return JsonResponse(final_data,safe=False)
+   
 
 
 

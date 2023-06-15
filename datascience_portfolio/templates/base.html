@@ -12,11 +12,17 @@
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
         <link href="{% static 'css/custom.css' %}" rel="stylesheet" />
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
         <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script src="{% static 'js/custom.js' %}"></script>
+
+        
+        {% block extrascript %}
+
+        {% endblock %}
 
      
         
@@ -27,39 +33,24 @@
             <a class="navbar-brand ps-3" href="/">Portfolio</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-            <!-- Navbar Search-->
-            {% comment %} <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
-                </div>
-            </form> {% endcomment %}
-            <!-- Navbar-->
-            {% comment %} <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!">Settings</a></li>
-                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="#!">Logout</a></li>
-                    </ul>
-                </li>
-            </ul> {% endcomment %}
+    
         </nav>
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Portfolio</div>
+                            <a class="nav-link" href="http://127.0.0.1:8050/" target="_blank">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Dashboard
+                            </a>
                             <a class="nav-link" href="{% url 'custom_object_detection' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-search"></i></div>
                                 Custom Object Detection
                             </a>
                             <a class="nav-link" href="{% url 'summarising' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                                Summarising
+                                Summary
                             </a>
                             <a class="nav-link" href="{% url 'object_classification' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
@@ -83,15 +74,15 @@
                             </a>
                             <a class="nav-link" href="{% url 'chat_gpt' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-comment-alt"></i></div>
-
                                 Chat GPT
+                            </a>
+                            <a class="nav-link" href="{% url 'mcq' %}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-comment-alt"></i></div>
+                                MCQ
                             </a>
                         </div>
                     </div>
-                    <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as:</div>
-                        Demo
-                    </div>
+               
                 </nav>
             </div>
 
@@ -105,7 +96,7 @@
 <br><br>
 {% block footer %}
 <footer class="py-4 bg-light mt-auto">
-    <div class="container-fluid px-4">
+    {% comment %} <div class="container-fluid px-4">
         <div class="d-flex align-items-center justify-content-between small">
             <div class="text-muted">Copyright &copy; Your Website 2021</div>
             <div>
@@ -114,7 +105,7 @@
                 <a href="#">Terms &amp; Conditions</a>
             </div>
         </div>
-    </div>
+    </div> {% endcomment %}
 </footer>
 {% endblock %}
 
@@ -128,8 +119,6 @@
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
 <script src="{% static 'js/datatables-simple-demo.js' %}"></script>
 
-{% block extrascript %}
-{% endblock%}
 </body>
 </html>
 

@@ -29,10 +29,10 @@
 
 }
 .uploader label:hover {
-  border-color: #EC407A;
+  border-color: #337e50;
 }
 .uploader label.hover {
-  border: 3px solid #EC407A;
+  border: 3px solid #337e50;
   box-shadow: inset 0 0 0 6px #eee;
 }
 .uploader label.hover #start i.fa {
@@ -133,7 +133,7 @@
   color: #fff;
   transition: all 0.2s ease-in-out;
   box-sizing: border-box;
-  background: #EC407A;
+  background: #337e50;
   border-color: #454cad;
   cursor: pointer;
 }
@@ -151,12 +151,24 @@
   margin-right: -5px;
 }
 .formbtn{
-  border-radius: 3px;
-  border: solid 3px #EC407A;
+  /* border-radius: 3px;
+  border: solid 3px #337e50;
   padding: 8px 10px;
-  background: #EC407A;
+  background: #337e50;
   color: #fff;
-  font-weight: bold;
+  font-weight: bold; */
+
+  color: #FFFFFF;
+text-transform: uppercase;
+font-size: 15px;
+background-color: #337e50;
+padding: 10px 30px;
+border-radius: 4px;
+border: 2px solid #337e50;
+font-weight: 500;
+display: inline-block;
+height: auto;
+
 }
 .formtext:focus{
   border: solid 3px #EC407A;
@@ -169,4 +181,26 @@
 }
 
 
+
+.heading-color{
+  color:#337E50
+}
+
+.border-color{
+  border-color:#337e50
+}
+
+
+.card-bg{
+background-color: #337e50;
+}
+
+.card-title{
+color:#FFFFFF!important;
+font-weight:500;
+}
+
+.img-size{
+  height:36rem;
+}
 

@@ -1,66 +1,42 @@
-#pip install transformers
-# from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+import nltk
+from nltk.corpus import wordnet
+from nltk.tokenize import sent_tokenize, word_tokenize
 
-# # pretrained model
-# model_name = "Vamsi/T5_Paraphrase_Paws"
-# tokenizer = AutoTokenizer.from_pretrained(model_name)
-# model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-
-
-# #Sentences paraphrasing 
-# def get_paraphrased_sentences(sentence):
-
-#   num_return_sequences=5 
-#   num_beams=5
-
-#   # tokenize the text to be form of a list of token IDs
-#   inputs = tokenizer([sentence], truncation=True, padding="longest", return_tensors="pt")
-
-#   # generate the paraphrased sentences
-#   outputs = model.generate(
-#     **inputs,
-#     num_beams=num_beams,
-#     num_return_sequences=num_return_sequences,
-#   )
-#   # decode the generated sentences using the tokenizer to get them back to text
-#   return tokenizer.batch_decode(outputs, skip_special_tokens=True)
-
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-import nltk 
-
-#pretrained model
-# model_name = "Vamsi/T5_Paraphrase_Paws"
-# tokenizer = AutoTokenizer.from_pretrained(model_name)
-# model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-
+def get_synonyms(word, pos):
+    synonyms = []
+    for syn in wordnet.synsets(word, pos=pos):
+        for lemma in syn.lemmas():
+            synonyms.append(lemma.name())
+    return synonyms
 
 def get_paraphrased_sentences(paragraph):
-    model_name = "Vamsi/T5_Paraphrase_Paws"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-
-    num_return_sequences=5 
-    num_beams=5
-
-    # Split the paragraph into individual sentences
-    sentences = nltk.sent_tokenize(paragraph)
-    paraphrased_sentences = []
+    sentences = sent_tokenize(paragraph)
+    paraphrased_paragraph = []
 
     for sentence in sentences:
-        # Tokenize the sentence to be in the form of a list of token IDs
-        inputs = tokenizer([sentence], truncation=True, padding="longest", return_tensors="pt")
-        # Generate the paraphrased sentences
-        outputs = model.generate(
-            **inputs,
-            num_beams=num_beams,
-            num_return_sequences=num_return_sequences,
-        )
-        # Decode the generated sentences using the tokenizer to get them back to text
-        paraphrases = tokenizer.batch_decode(outputs, skip_special_tokens=True)
-        # Append the paraphrased sentences to the result list
-        
-        paraphrased_sentences.append(paraphrases[1])
-    converted_Sentence = ' '.join(paraphrased_sentences) 
-    return converted_Sentence
+        words = nltk.word_tokenize(sentence)
+        tagged_words = nltk.pos_tag(words)
+        paraphrased_sentence = []
 
+        for word, tag in tagged_words:
+            if tag.startswith('JJ'):  # Adjective
+                synonyms = get_synonyms(word, wordnet.ADJ)
+                paraphrased_word = synonyms[0] if synonyms else word
+            elif tag.startswith('VB'):  # Verb
+                synonyms = get_synonyms(word, wordnet.VERB)
+                paraphrased_word = synonyms[1] if len(synonyms) > 1 else synonyms[0] if synonyms else word
+            elif tag.startswith('NN'):  # Noun
+                synonyms = get_synonyms(word, wordnet.NOUN)
+                paraphrased_word = synonyms[0] if synonyms else word
+            else:
+                paraphrased_word = word  # Keep the word as it is for other POS tags
 
+            paraphrased_sentence.append(paraphrased_word)
+
+        paraphrased_sentence = ' '.join(paraphrased_sentence)
+        paraphrased_paragraph.append(paraphrased_sentence)
+
+    paraphrased_paragraph = ' '.join(paraphrased_paragraph)
+    paraphrased_paragraph = '. '.join(s.capitalize() for s in paraphrased_paragraph.split('. '))
+
+    return paraphrased_paragraph
