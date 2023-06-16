@@ -8,8 +8,6 @@ nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('popular')
 from nltk.corpus import wordnet as wn
-
-
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize import word_tokenize
@@ -20,7 +18,7 @@ import requests
 import json
 import pywsd
 import flashtext
-import pke
+# import pke
 from flashtext import KeywordProcessor
 from pywsd.similarity import max_similarity
 from pywsd.lesk import adapted_lesk

@@ -11,12 +11,7 @@ from .ML_Models.paraphrasing import get_paraphrased_sentences
 from .ML_Models.chatGPT import get_completion_from_messages
 from .ML_Models.mcq import generate_questions_with_answers
 from django.http import JsonResponse
-
 import json
-
-# def Index(request):
-#     return render(request, 'index.html')
-
 
 class CustomObjectDetection(View):
     def get(self, request, *args, **kwargs):  
@@ -27,7 +22,7 @@ class CustomObjectDetection(View):
         image_obj = ImageProcessing.objects.create(
             image = image
         )
-        user_image = "test.jpg"
+        user_image = "Output.jpg"
         image_path = image_obj.image.path
         result= yolo_detection(image_path,user_image)
         if result:

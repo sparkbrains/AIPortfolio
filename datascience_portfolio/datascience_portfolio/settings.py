@@ -140,3 +140,8 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+#ML models path.
+YOLOV5 ="ML_Models/object_classification/yolov5/best.pt"
+IMAGE_SAVING_PATH ="static/portfolio/"
