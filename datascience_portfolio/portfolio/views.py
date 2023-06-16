@@ -10,8 +10,8 @@ from .ML_Models.stock_prediction import predict_stock_prices
 from .ML_Models.paraphrasing import get_paraphrased_sentences
 from .ML_Models.chatGPT import get_completion_from_messages
 from .ML_Models.mcq import generate_questions_with_answers
-
 from django.http import JsonResponse
+
 import json
 
 # def Index(request):
@@ -30,7 +30,6 @@ class CustomObjectDetection(View):
         user_image = "test.jpg"
         image_path = image_obj.image.path
         result= yolo_detection(image_path,user_image)
-        print(result,"??????????")
         if result:
             count,responded_image = result
             count_list =[]
@@ -145,9 +144,11 @@ class ChatGPT(View):
      
         message = request.POST.get('message')
         response=get_completion_from_messages(message)
-        return render(request,'models_view/chatgpt.html',{"response":response})
-
-
+        data = {"sender":message,
+                "response":response
+                }
+        return JsonResponse(data)
+    
 
 class MCQ(View):
   
@@ -162,7 +163,6 @@ class MCQ(View):
                 questions_ob.all().delete()
                 Options.objects.all().delete()
                 questions = generate_questions_with_answers(request.POST.get('user_input'), limit=10)
-                print(questions,">>>>>>>>>>>>>>>>>>>>>>>~")
                 for question in questions:
                     options =  question['options']
                     answer = question['answer']

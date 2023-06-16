@@ -1,103 +1,136 @@
-{% extends "base.html" %}
-{% load static %}
-<script>
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous" />
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" type="module" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous">
-</script>
-</script>
-<script type="module">
-   import Autogrow from "https://cdn.jsdelivr.net/npm/vanilla-autogrow@1.0.0/autogrow.min.js";
-   var inst = new Autogrow();
-</script>
-{% block content %}
 <style>
-   .overlay {
-   background-color:#EFEFEF;
-   position: fixed;
-   width: 100%;
-   height: 100%;
-   z-index: 1000;
-   top: 0px;
-   left: 0px;
-   opacity: .5; /* in FireFox */ 
-   filter: alpha(opacity=50); /* in IE */
-   }
-</style>
-<div id="layoutSidenav_content">
-   <main>
-      <div class="container-fluid px-4">
-         <h1 class="mt-4 heading-color">
-            ChatGPT
-         </h1>
-         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item"><a style="color:#337e50" href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
-            <li class="breadcrumb-item active"> ChatGPT</li>
-         </ol>
-         <div class="card card box-shadow  mx-auto my-5 border-color" >
-            <h5 class="card-header heading-color">Description</h5>
-            <div class="card-body card-bg">
-               <h5 class="card-title">ChatGPT</h5>
-               <p class="card-text">In this project, we have custom trained our model on 1200 images for detection of safety measures on construction sites ensuring that workers are wearing the necessary safety equipment.<br><br>
-                  <b><i>Input</i></b> - image of workers from construction site <br>
-                  <b><i>Output</i></b> -  detected image with SafetyHat or SafetyVest and a table of detected items.
-               </p>
-            </div>
-         </div>
-         
-         <div class="card mb-4 border-color ">
-            <form name="form1" onsubmit="return Spinner()" action="{% url 'chat_gpt' %}", method="POST">
-               {% csrf_token %}
-               <div class="card-body ">
-                  <p class="mb-0">
-                     <label for="exampleFormControlTextarea1" class="form-label">Enter the text below.
-                     </label>
-                     <input  id="user_input" type="text" class="form-control border-color"  name="message">
-                  <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
-                     <span class="visually-hidden">Loading...</span>
-                  </div>
-                  <span id="error_div" style="display: none;color:red;">Please enter text to send.</span>
-                  <br>
-                  <button  type="submit" class="formbtn">Send</button>
-               </div>
-            </form>
-            <div class="spinner-border m-5 d-none" role="status">
-               <span class="visually-hidden">Loading...</span>
-            </div>
-         </div>
-        {% if response %}
-         <div class="row">
-            <div class="col-lg-12">
-               <div class="card mb-4 border-color">
-                  <div class="card-header card-title card-bg">
-                     Response
-                  </div>
-                  <div class="card-body border-color">{{response}}<br><br></canvas></div>
-               </div>
-            </div>
-         </div>
-      </div>
-
-{% endif %}
-</main>
-</div>
-<script> 
-   function Spinner()
-   {
-   var empt = document.forms["form1"]["message"].value;
-   if (empt == "")
-   {
-   $("#error_div").show();
-   
-   return false;
-   }
-   else 
-   {
-   {% comment %} $("#spinner_div").show();
-   var div= document.createElement("div");
-     div.className += "overlay";
-     document.body.appendChild(div); {% endcomment %}
-   return true; 
-   }
-   }
-</script>  
-{% endblock %}
+    .error{
+    color:red;
+    }
+ </style>
+ {% extends "base.html" %}
+ {% load static %}
+ {% block extra_css %}
+ <link href="{% static 'css/chat.css' %}" rel="stylesheet" />
+ {% endblock %}
+ {% block content %}
+ <div id="layoutSidenav_content">
+    <main>
+       <div class="container-fluid px-4">
+          <h1 class="mt-4 heading-color">
+             ChatGPT
+          </h1>
+          <ol class="breadcrumb mb-4">
+             <li class="breadcrumb-item"><a style="color:#337e50" href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
+             <li class="breadcrumb-item active"> ChatGPT</li>
+          </ol>
+          <div class="card card box-shadow  mx-auto my-5 border-color" >
+             <h5 class="card-header heading-color">Description</h5>
+             <div class="card-body card-bg">
+                <h5 class="card-title">ChatGPT</h5>
+                <p class="card-text">ChatGPT behaves like an instructor, it takes on the role of a knowledgeable and informative guide. You can ask questions or provide prompts related to various subjects, and ChatGPT will respond with detailed explanations and instructions. It aims to provide helpful insights, step-by-step guidance, examples, and definitions to help you understand a particular concept or topic. 
+                   <br><br>
+                   <b><i>Input</i></b> - The input to ChatGPT as an instructor would be a question or a prompt related to a particular subject or topic.
+                   <br>
+                   <b><i>Output</i></b> - It would be a response that provides an explanation or instruction on the given topic.<br><br>
+                </p>
+             </div>
+          </div>
+          <!--start-->
+          <!-- chat-area -->
+          <section class="message-area">
+             <div class="container-fluid">
+                <div class="row">
+                   <div class="col-12">
+                      <div class="chat-area">
+                         <!-- chatbox -->
+                         <div class="chatbox">
+                            <div class="modal-dialog-scrollable">
+                               <div class="modal-content">
+                                  <div class="msg-head" style="background-color:#337E50">
+                                     <div class="row">
+                                        <div class="col-8">
+                                           <div class="d-flex align-items-center">
+                                              <div class="flex-grow-1 ms-3">
+                                                 <h3>AI Chat</h3>
+                                              </div>
+                                           </div>
+                                        </div>
+                                        <div class="col-4">
+                                        </div>
+                                     </div>
+                                  </div>
+                                  <div class="modal-body">
+                                     <div class="msg-body">
+                                        <ul id="chat_message">
+                                        </ul>
+                                     </div>
+                                  </div>
+                                  <div class="send-box">
+                                     <form id="Chat_form" class="align-items-start">
+                                        {% csrf_token %}
+                                        <div class="w-100">
+                                           <input type="text" id="user_input" name="message" class="form-control" aria-label="message…" placeholder="Write message…">
+                                        </div>
+                                        <button type="submit" class="chat_btn"><i class="fa fa-paper-plane " aria-hidden="true"></i> Send
+                                        <span class="spinner-border spinner-border-sm show_spinner d-none" role="status" aria-hidden="true"></span>
+                                        <span class="visually-hidden show_spinner">Loading...</span>
+                                        </button>
+                                     </form>
+                                     <div class="send-btns">    
+                                     </div>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                      <!-- chatbox -->
+                   </div>
+                </div>
+             </div>
+       </div>
+       </section>
+       <!-- char-area -->
+       <!--end-->
+    </main>
+ </div>
+ <script>
+    $('.chat_btn').click(function () {
+       $("#Chat_form").validate({
+           rules: {
+             
+             message: {
+                   required: true,
+               },
+           },
+           message: {
+             
+               name: {
+                   required: "This field is required.",
+               },
+           },
+           submitHandler: function (form) {
+               message = $("#Chat_form").find('#user_input').val()
+               $(".show_spinner").removeClass('d-none');
+    
+               $.ajax({
+                   type: "POST",
+                   url: "/chat-gpt/",
+                   data: {
+                      message: message,
+                       csrfmiddlewaretoken: '{{ csrf_token }}',
+                   },
+                   success: function (data) {
+                      $("#user_input").val('')
+                      $("#user_input-error").removeClass("error");
+                      $(".show_spinner").addClass('d-none');
+                      var response= '<li class="sender"><p>'+data.response+'</p></li>'
+                      var sent_message= '<li class="repaly"><p>'+data.sender+'</p></li>'
+                      $('#chat_message').append(sent_message+response)
+    
+                   }
+                   
+               });
+    
+           }
+    
+       });
+    
+    })
+ </script>
+ {% endblock %}
