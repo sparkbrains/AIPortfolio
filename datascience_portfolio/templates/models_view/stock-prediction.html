@@ -1,29 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<style>
-   .overlay {
-      background-color:#EFEFEF;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-      top: 0px;
-      left: 0px;
-      opacity: .5; /* in FireFox */ 
-      filter: alpha(opacity=50); /* in IE */
-  }
-</style>
+
 <div id="layoutSidenav_content">
 <main>
    <div class="container-fluid px-4">
       <h1 class="mt-4 heading-color">
          Stock Prediction 
       </h1>
-      <ol class="breadcrumb mb-4">
-         <li class="breadcrumb-item"><a a style="color:#337e50" href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
-         <li class="breadcrumb-item active"> Stock Market Prediction </li>
-      </ol>
      
 {% if not resulted_image %}
       <div class="card card box-shadow  mx-auto my-5 border-color" >

@@ -64,7 +64,6 @@ class SemanticSegmentation(View):
 class ObjectClassification(View):
     
     def get(self, request, *args, **kwargs): 
-       
         return render(request,'models_view/object-classification.html')
     
     def post(self, request, *args, **kwargs):
@@ -73,18 +72,12 @@ class ObjectClassification(View):
             image = image
         )
         label_name = predict_image(image_obj.image.path)
-
         return render(request,'models_view/object-classification.html',{"label_name":label_name,"image_obj":image_obj})
 
 
 
 class MusicGenerationn(View):
-    '''
-    This class is used to convert the music ulploded by user.
-    Music format midi.
-    '''
-    def get(self, request, *args, **kwargs): 
-              
+    def get(self, request, *args, **kwargs):      
         return render(request,'models_view/music-generation.html')
     
     def post(self, request, *args, **kwargs):
@@ -95,7 +88,6 @@ class MusicGenerationn(View):
         music = music_conversion(music_obj.music.path)
         split_path = music.split('static/')
         audio_path = str(split_path[1])
-
         return render(request,'models_view/music-generation.html',{"music":audio_path,"original_sound":music_obj})
 
 
@@ -152,7 +144,6 @@ class MCQ(View):
     
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
-                
             questions_ob = Questions.objects
             if request.POST.get('user_input'):
                 questions_ob.all().delete()

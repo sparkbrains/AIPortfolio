@@ -1,31 +1,17 @@
 
-import music21
-import re
 from music21 import converter, instrument, note, chord
-from pydub import AudioSegment
 import warnings
 warnings.filterwarnings("ignore")
 import numpy as np
-import matplotlib
 import matplotlib.pyplot as plt
 import pickle
-import numpy
 import os
 import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras import layers
 from keras.models import load_model
 from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.callbacks import ModelCheckpoint
-from music21 import converter, instrument, note, chord, stream, chord, midi, tempo
-
-from keras.layers import Bidirectional
-from keras.models import Sequential
-from keras.layers import LSTM
-from keras.layers import Dense
-from tqdm import tqdm
-import glob
+from music21 import converter, instrument, note, chord, stream, chord, tempo
 from django.conf import settings
 
 
@@ -62,9 +48,9 @@ def music_conversion(file):
     network_input = np.reshape(network_input, (n_patterns, sequence_length, 1))
     network_input = network_input / float(n_vocab)
     network_output = to_categorical(network_output)
-    with open(os.path.join(settings.BASE_DIR,'Music_project/int_to_note.pkl'), 'rb') as f:
+    with open(os.path.join(settings.BASE_DIR,settings.MUSIC_GENERATOR_MODEL), 'rb') as f:
         int_to_note = pickle.load(f)
-    model = load_model( os.path.join(settings.BASE_DIR,'Music_project/weights.234.0.8730.hdf5'))
+    model = load_model( os.path.join(settings.BASE_DIR,settings.MUSIC_GENERATOR_WEIGHT))
     """ Generate notes from the neural network based on a sequence of notes """
     start = np.random.randint(0, len(network_input)-1)
 

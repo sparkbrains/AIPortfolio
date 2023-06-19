@@ -1,31 +1,11 @@
-
-
-
 {% extends "base.html" %}
 {% load static %}
-<script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" type="module" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
-   
 </script>
 <script type="module">
-    import Autogrow from "https://cdn.jsdelivr.net/npm/vanilla-autogrow@1.0.0/autogrow.min.js";
-    var inst = new Autogrow();
-  </script>
+   import Autogrow from "https://cdn.jsdelivr.net/npm/vanilla-autogrow@1.0.0/autogrow.min.js";
+   var inst = new Autogrow();
+</script>
 {% block content %}
-<style>
-    .overlay {
-       background-color:#EFEFEF;
-       position: fixed;
-       width: 100%;
-       height: 100%;
-       z-index: 1000;
-       top: 0px;
-       left: 0px;
-       opacity: .5; /* in FireFox */ 
-       filter: alpha(opacity=50); /* in IE */
-   }
- </style>
 
 <div id="layoutSidenav_content">
    <main>
@@ -33,122 +13,94 @@
          <h1 class="mt-4 heading-color">
             Summary
          </h1>
-         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item"><a style="color:#337e50" href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
-            <li class="breadcrumb-item active "> Summarising</li>
-         </ol>
-         {% comment %} <div id="error_div" class="alert alert-primary" style="display:none;" role="alert">
-            Please enter the text below.
-         </div> {% endcomment %}
          {% if not summary %}
-
          <div class="card card box-shadow  mx-auto my-5 border-color" >
             <h5 class="card-header heading-color">Description</h5>
             <div class="card-body card-bg">
                <h5 class="card-title">Text Summarization</h5>
                <p class="card-text">Text summarization is the process of generating a concise and coherent summary of a longer text, such as an article, document, or news story. It aims to capture the main points and key information of the original text in a condensed form.
-                The summary should provide a coherent and informative overview of the original text, highlighting the most important aspects and key details.Mainly we use NLTK Library for this.
-
-                <br><br>
+                  The summary should provide a coherent and informative overview of the original text, highlighting the most important aspects and key details.Mainly we use NLTK Library for this.
+                  <br><br>
                   <b><i>Input</i></b> - The input to a text summarization system is typically a longer piece of text,. <br>
                   <b><i>Output</i></b> -The output is a shorter summary that captures the essential content..<br><br>
-                  </p>
+               </p>
             </div>
          </div>
-
          <div class="card mb-4 border-color ">
             <form name="form1" onsubmit="return Spinner()" action="{% url 'summarising' %}", method="POST">
-                {% csrf_token %}
-            <div class="card-body ">
-               <p class="mb-0">
-                <label for="exampleFormControlTextarea1" class="form-label">Enter the text below.
-                </label>
-                <textarea  id="user_input" name="user_input" class="form-control border-color" id="exampleFormControlTextarea1" rows="3"></textarea>
-                <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
-                    <span class="visually-hidden">Loading...</span>
+               {% csrf_token %}
+               <div class="card-body ">
+                  <p class="mb-0">
+                     <label for="exampleFormControlTextarea1" class="form-label">Enter the text below.
+                     </label>
+                     <textarea  id="user_input" name="user_input" class="form-control border-color" id="exampleFormControlTextarea1" rows="3"></textarea>
+                  <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
+                     <span class="visually-hidden">Loading...</span>
                   </div>
                   <span id="error_div" style="display: none;color:red;">Field can not be empty.</span>
-
                   <br>
                   <button  type="submit" class="formbtn">Submit</button>
-
+               </div>
+            </form>
+            <div class="spinner-border m-5 d-none" role="status">
+               <span class="visually-hidden">Loading...</span>
             </div>
-        </form>
-
-        <div class="spinner-border m-5 d-none" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-
          </div>
-            {% endif %}
-        
-      {% if summary %}
-      <div class="col-sm-12">
-        <a href="{% url 'summarising' %}"><button type="submit" class="formbtn ">Input Again</button><a/>
-     </div>
-     <br><br>
-      <section id="gallery">
-        <div class="container-fluid">
-          <div class="row">
-          <div class="col-lg-6 mb-6">
-          <div class="card border-color ">
-            <div class="card-body">{{raw_text}}</canvas></div>
-            <div class="card-body card-body card-bg">
-              <h5 class="card-title">Raw Text</h5>
-              <p class="card-text"></p>
-            
-            </div>
-           </div>
-          </div>
-       
-          <div class="col-lg-6 mb-6">
-            <div class="card border-color ">
-            <div class="card-body">{{summary}}</canvas></div>
-            <div class="card-body card-body card-bg">
-              <h5 class="card-title">Summary</h5>
-              <p class="card-text"></p>
-            
-            </div>
-           </div>
+         {% endif %}
+         {% if summary %}
+         <div class="col-sm-12">
+            <a href="{% url 'summarising' %}"><button type="submit" class="formbtn ">Input Again</button><a/>
+         </div>
+         <br><br>
+         <section id="gallery">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-lg-6 mb-6">
+                     <div class="card border-color ">
+                        <div class="card-body">{{raw_text}}</canvas></div>
+                        <div class="card-body card-body card-bg">
+                           <h5 class="card-title">Raw Text | Length : {{raw_text_length}} </h5>
+                           </h5>
+                           
 
-           </div>
-           </div>
-          </div>
-        </div>
+                           <p class="card-text"></p>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-6 mb-6">
+                     <div class="card border-color ">
+                        <div class="card-body">{{summary}}</canvas></div>
+                        <div class="card-body card-body card-bg">
+                           <h5 class="card-title">Summary | Length : {{summary_len}} </h5>
+                           <p class="card-text"></p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
       </div>
-      </section>
-      {% endif %}
-
-
-
-      
- 
-
-   </main>
 </div>
-
+</section>
+{% endif %}
+</main>
+</div>
 <script> 
-
-    function Spinner()
+   function Spinner()
    {
    var empt = document.forms["form1"]["user_input"].value;
    if (empt == "")
    {
-    $("#error_div").show();
-
-    return false;
+   $("#error_div").show();
+   
+   return false;
    }
    else 
    {
-   //$("#spinner_div").show();
    var div= document.createElement("div");
-    div.className += "overlay";
-    document.body.appendChild(div);
+   div.className += "overlay";
+   document.body.appendChild(div);
    return true; 
    }
    }
-   </script>  
-   
- 
+</script>  
 {% endblock %}
-

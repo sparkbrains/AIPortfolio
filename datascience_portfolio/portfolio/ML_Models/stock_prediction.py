@@ -44,11 +44,7 @@ def predict_stock_prices(path, plot_image_name,n_periods):
     plt.xlabel('Date')
     plt.ylabel('Stocks')
     plt.xticks(rotation=90)
-
-    plt.savefig(os.path.join(settings.BASE_DIR,"static/stock_prediction/")+plot_image_name)
-
-    plt.show()
-
-    
+    plt.savefig(os.path.join(settings.BASE_DIR,settings.GRAPH_SAVING_PATH)+plot_image_name)
+    plt.show()    
     return final_data
 

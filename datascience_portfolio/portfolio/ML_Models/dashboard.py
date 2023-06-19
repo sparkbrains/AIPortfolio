@@ -7,10 +7,8 @@ import plotly.graph_objects as go
 import dash_mantine_components as dmc
 import plotly.express as px
 import os
-from django.conf import settings
 
-df = pd.read_csv('/home/spark/Desktop/project/django projects/portfolio/datascience_portfolio/dashboard/Employee-Attrition.csv')
-
+df = pd.read_csv('/home/spark/Desktop/project/python10/AIPortfolio/datascience_portfolio/ML_Models/dashboard/Employee-Attrition.csv')
 Under_25 = df[df['Age'] < 25]
 Age_25 = df[(df['Age'] >= 25) & (df['Age'] < 35)]
 Age_35 = df[(df['Age'] >= 35) & (df['Age'] < 45)]

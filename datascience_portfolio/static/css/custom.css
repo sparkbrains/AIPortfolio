@@ -204,3 +204,44 @@ font-weight:500;
   height:36rem;
 }
 
+
+
+.overlay {
+  background-color:#EFEFEF;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  top: 0px;
+  left: 0px;
+  opacity: .5; /* in FireFox */ 
+  filter: alpha(opacity=50); /* in IE */
+  }
+  .custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  }
+  element.style {
+  }
+  .controls {
+  width: 48rem!important;
+  height: inherit;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+  background: #f2f5f6;
+  padding: 0 0.25em;
+  user-select: none;
+  }
+
+  .file {
+    visibility: hidden;
+    position: absolute;
+    }
+
+

@@ -145,3 +145,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #ML models path.
 YOLOV5 ="ML_Models/object_classification/yolov5/best.pt"
 IMAGE_SAVING_PATH ="static/portfolio/"
+
+#X-Ray classification 
+OBJEJECT_CLASSIFICATION = 'ML_Models/classification_task/model.ckpt'
+
+#Music generator
+MUSIC_GENERATOR_MODEL = 'ML_Models/music/int_to_note.pkl'
+MUSIC_GENERATOR_WEIGHT = 'ML_Models/music/weights.234.0.8730.hdf5'
+
+
+#Stock prediction
+GRAPH_SAVING_PATH = 'static/stock_prediction/'
+
+#Segmentation
+SEGMENTATION = 'ML_Models/segmentation_yolo/yollo/yolov5s-seg.pt/'
+YAML_PATH = 'ML_Models/segmentation_yolo/yollo/data/coco128.yaml'
+
+#Dashboard
+CSV_PATH = 'ML_Models/dashboard/Employee-Attrition.csv'

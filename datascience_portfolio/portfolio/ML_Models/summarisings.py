@@ -2,12 +2,9 @@ import nltk
 from nltk.tokenize import sent_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
-
-
 # Initialize NLTK modules
-nltk.download('punkt')
-nltk.download('stopwords')
-
+# nltk.download('punkt')
+# nltk.download('stopwords')
 
 def summarizer(raw_text):
 
@@ -29,7 +26,6 @@ def summarizer(raw_text):
                     word_frequencies[stem_word] += 1
                 else:
                     word_frequencies[stem_word] = 1
-    # print(word_frequencies,">>>>>>>>>>>>>>>>>>>>>>>")
     # Calculate the sentence scores based on word frequencies
     sentence_scores = {}
     for sentence in sentences:

@@ -1,19 +1,12 @@
-
-
 import torch
 import torch.nn as nn
 import torch.nn as nn
 import os
 from torchvision import transforms
 from PIL import Image
-from torch.autograd import Variable
-from torch.nn import Linear, ReLU, CrossEntropyLoss, Sequential, Conv2d, MaxPool2d, Module, Softmax, BatchNorm2d, Dropout
-from torch.optim import Adam, SGD
 import torch.nn as nn
 import torch.nn.functional as F
 from django.conf import settings
-
-
 
 class SimpleCNN(nn.Module):
     def __init__(self):
@@ -48,9 +41,8 @@ model=SimpleCNN()
 
 # Predict function definition
 def predict_image(path):
-    
     #Loading Model
-    checkpoint = torch.load(os.path.join(settings.BASE_DIR,'Classification task/model.ckpt'))
+    checkpoint = torch.load(os.path.join(settings.BASE_DIR,settings.OBJEJECT_CLASSIFICATION))
     # checkpoint = torch.load('model.ckpt')
     # Load the parameters into the model
     model.load_state_dict(checkpoint)
@@ -61,20 +53,14 @@ def predict_image(path):
                                 transforms.Grayscale(num_output_channels=1),
                                  transforms.CenterCrop(224), transforms.ToTensor()])
     label_map={0:'Covid-19',1:'NORMAL', 2:'PNEUMONIA',3:'TUBERCULOSIS'}
-    
     # Define the transformations to be applied on the input image
-
     image = Image.open(path)
     image_tensor = transform(image).unsqueeze(0)
-
     # Pass the image through the model
     output = model(image_tensor)
-
     # Get the class label with the highest probability.
     _, prediction = torch.max(output.data, 1)
     
     label_name=label_map[prediction.item()]
-    print("Predicted class label:", label_name)
     image=""
-
     return label_name

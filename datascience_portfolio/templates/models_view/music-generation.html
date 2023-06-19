@@ -1,237 +1,149 @@
-
 {% extends "base.html" %}
 {% load static %}
-{% block extrascript %}
+{% block extra_js %}
 <script src="{% static 'js/music-generator.js' %}"></script>
 {% endblock %}
+{% block extrascript %}
+{% endblock %}
 {% block content %}    
-<style>
-    .file {
-    visibility: hidden;
-    position: absolute;
-    }
-</style>
-<style>
-   .overlay {
-      background-color:#EFEFEF;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-      top: 0px;
-      left: 0px;
-      opacity: .5; /* in FireFox */ 
-      filter: alpha(opacity=50); /* in IE */
-  }
 
-  .custom-file-upload {
-   border: 1px solid #ccc;
-   display: inline-block;
-   padding: 6px 12px;
-   cursor: pointer;
- }
- 
-
-
-element.style {
-}
-
-
-.controls {
-    width: 48rem!important;
-    height: inherit;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    position: relative;
-    overflow: hidden;
-    align-items: center;
-    background: #f2f5f6;
-    padding: 0 0.25em;
-    user-select: none;
-}
-
-</style>
-      
 
 <div id="layoutSidenav_content">
-   <main>
-      <div class="container-fluid px-4">
-         <h1 class="mt-4 heading-color">
-            Music Generation
-         </h1>
-         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item"><a style="color:#337e50" href="http://127.0.0.1:8050/" target="_blank">Dashboard</a></li>
-            <li class="breadcrumb-item active"> Music Generation using AI </li>
-         </ol>
-         {% if not music %}
-
-         <div class="card card box-shadow  mx-auto my-5 border-color" >
-            <h5 class="card-header heading-color">Description</h5>
-            <div class="card-body card-bg">
-               <h5 class="card-title">Music Generation</h5>
-               <p class="card-text">In a music generation project, our aim is to modify the tune of user music. This involves utilising deep learning techniques to generate music by changing the dynamic tempo, duration, and music instruments. 
-                  <br><br>
-                  <b><i>Input</i></b> - Midi file.
-                  <br>
-                  <b><i>Output</i></b> - Midi file with changing tune.
-
-                  </p>
-            </div>
-         </div>   
-
-         <div class="card mb-4 border-color">
-            <div class="card-body" style="background: #f9f9f9;">
-               <p class="mb-0">
-                  <a href="{% static '' %}sample datasets/music_generator.zip/" ><button style="float:right" type="submit" class="formbtn">Sample Dataset
-                  </button></a>
-               <form  name="form1"  onsubmit="return Spinner()" action="{% url 'music_generation' %}" method="POST" id="image-form" enctype="multipart/form-data" class="uploader">
-                  {% csrf_token %}
-                  <input id="file-upload" onchange="ImageFormatValidate()" type="file"  name="mid_music" accept=".MID" / >
-                  <label for="file-upload" id="file-drag" class="anim   ated wow zoomInUp delay-1s">
-                     <img id="file-image" src="#" alt="Preview" class="hidden">
-                     <div id="start">
-                        <i class="fa fa-download" aria-hidden="true"></i>
-                        <div>Upload MID File only</div>
-                        <div id="notimage" class="hidden">Please select an image</div>
-                        <span id="file-upload-btn" class="btn btn-">Select a file</span>
-                        <p id ="file_name" ></p>
-
-                     </div>
-                     <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                      </div>
-
-                     <span id="error_div" style="display: none;color:red;"> Please Upload the MID file, File cannot be empty.</span>
-                  </label>
-
-                  <button  type="submit" class="formbtn btn-css">Submit</button>
-               </form>
-            </div>
+<main>
+   <div class="container-fluid px-4">
+      <h1 class="mt-4 heading-color">
+         Music Generation
+      </h1>
+  
+      {% if not music %}
+      <div class="card card box-shadow  mx-auto my-5 border-color" >
+         <h5 class="card-header heading-color">Description</h5>
+         <div class="card-body card-bg">
+            <h5 class="card-title">Music Generation</h5>
+            <p class="card-text">In a music generation project, our aim is to modify the tune of user music. This involves utilising deep learning techniques to generate music by changing the dynamic tempo, duration, and music instruments. 
+               <br><br>
+               <b><i>Input</i></b> - Midi file.
+               <br>
+               <b><i>Output</i></b> - Midi file with changing tune.
+            </p>
          </div>
-         <br><br>
-         {% endif %}
-
+      </div>
+      <div class="card mb-4 border-color">
+         <div class="card-body" style="background: #f9f9f9;">
+            <p class="mb-0">
+               <a href="{% static '' %}sample datasets/music_generator.zip/" ><button style="float:right" type="submit" class="formbtn">Sample Dataset
+               </button></a>
+            <form  name="form1"  onsubmit="return Spinner()" action="{% url 'music_generation' %}" method="POST" id="image-form" enctype="multipart/form-data" class="uploader">
+               {% csrf_token %}
+               <input id="file-upload" onchange="ImageFormatValidate()" type="file"  name="mid_music" accept=".MID" / >
+               <label for="file-upload" id="file-drag" class="anim   ated wow zoomInUp delay-1s">
+                  <img id="file-image" src="#" alt="Preview" class="hidden">
+                  <div id="start">
+                     <i class="fa fa-download" aria-hidden="true"></i>
+                     <div>Upload MID File only</div>
+                     <div id="notimage" class="hidden">Please select an image</div>
+                     <span id="file-upload-btn" class="btn btn-">Select a file</span>
+                     <p id ="file_name" ></p>
+                  </div>
+                  <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
+                     <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <span id="error_div" style="display: none;color:red;"> Please Upload the MID file, File cannot be empty.</span>
+               </label>
+               <button  type="submit" class="formbtn btn-css">Submit</button>
+            </form>
+         </div>
+      </div>
+      <br><br>
+      {% endif %}
       {% if music %}
-
       <div class="row ">
          <div class="col-sm-12">
             <a href="{% url 'music_generation' %}"><button type="submit" class="formbtn ">Upload again</button><a/>
          </div>
          <br><br>
-         
-       <section id="gallery">
-         <div class="container-fluid">
-           <div class="row">
-           <div class="col-lg-6 mb-6">
-           <div class="card border-color" style="background: #f9f9f9;" >
-            <midi-player
-            src="{{original_sound.music.url}}"
-            sound-font visualizer="#myVisualizer">
-            </midi-player>              <div class="card-body card-bg">
-               <h5 class="card-title ">Original Music</h5>
-             
-             </div>
+         <section id="gallery">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-lg-6 mb-6">
+                     <div class="card border-color" style="background: #f9f9f9;" >
+                        <midi-player
+                           src="{{original_sound.music.url}}"
+                           sound-font visualizer="#myVisualizer">
+                        </midi-player>
+                        <div class="card-body card-bg">
+                           <h5 class="card-title ">Original Music</h5>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-6 mb-6">
+                     <div class="card border-color" style="background: #f9f9f9;">
+                        <midi-player
+                           src="{% static '' %}{{music}}"
+                           sound-font visualizer="#myVisualizer">
+                        </midi-player>
+                        <div class="card-body card-bg">
+                           <h5 class="card-title ">Generated Music</h5>
+                        </div>
+                     </div>
+                  </div>
+               </div>
             </div>
-           </div>
-        
-           <div class="col-lg-6 mb-6">
-           <div class="card border-color" style="background: #f9f9f9;">
-            <midi-player
-            src="{% static '' %}{{music}}"
-            sound-font visualizer="#myVisualizer">
-            </midi-player>             
-            <div class="card-body card-bg">
-               <h5 class="card-title ">Generated Music</h5>
-             
-             </div>
-            
-          
-
-            </div>
-           </div>
-           
-         </div>
-         {% comment %} <div class="card card box-shadow  mx-auto my-5 border-color" >
-            <h5 class="card-header heading-color">Output</h5>
-            <div class="card-body card-bg">
-               <p class="card-text">Here original sound has been changed. 
-                  <br><br>
-                  
-                  </p>
-            </div>
-         </div>  {% endcomment %}
-       </div>
-        
-       </section>
-
-       {% endif %}
-       
-
-
+         </section>
+         {% endif %}
       </div>
-
-
-   </main>
+</main>
 </div>
-
-   <script> 
-      function Spinner()
-      {
-      var empt = document.forms["form1"]["mid_music"].value;
-      if (empt == "")
-      {
-      $("#error_div").show();
+<script> 
+   function Spinner()
+   {
+   var empt = document.forms["form1"]["mid_music"].value;
+   if (empt == "")
+   {
+   $("#error_div").show();
    
-      return false;
-      }
-      else 
-      {
-      $("#spinner_div").show();
-      $("#error_div").hide();
+   return false;
+   }
+   else 
+   {
+   $("#spinner_div").show();
+   $("#error_div").hide();
    
-      var div= document.createElement("div");
-         div.className += "overlay";
-         document.body.appendChild(div);
-      return true; 
-      }
-      }
+   var div= document.createElement("div");
+      div.className += "overlay";
+      document.body.appendChild(div);
+   return true; 
+   }
+   }
    
-   </script>  
+</script>  
+<script>
+   function ImageFormatValidate(){
+     var fileInput = document.getElementById('file-upload');
+     var filePath = fileInput.value;
+     var allowedExtensions = /(\.mid)$/i;
+     if(!allowedExtensions.exec(filePath)){ 
+         fileInput.value = '';
+         $("#image_error").show();
+         $("#submit-button").prop('disabled',true);
+         $("#error_div").show();
    
-  <script>
-          function ImageFormatValidate(){
-            var fileInput = document.getElementById('file-upload');
-            var filePath = fileInput.value;
-            var allowedExtensions = /(\.mid)$/i;
-            if(!allowedExtensions.exec(filePath)){ 
-                fileInput.value = '';
-                $("#image_error").show();
-                $("#submit-button").prop('disabled',true);
-                $("#error_div").show();
-
-                return false;
-            }else{
-               $("#image_error").hide();
-            $("#submit-button").prop('disabled',false);
-            $("#error_div").hide();
-
-            }
-        }
-
-        $('#file-upload').change(function() {
-         var i = $(this).prev('label').clone();
-         var file = $('#file-upload')[0].files[0].name;
-         console.log(file)
-         $('#file_name').text(file)
-       });
+         return false;
+     }else{
+        $("#image_error").hide();
+     $("#submit-button").prop('disabled',false);
+     $("#error_div").hide();
+   
+     }
+   }
+   
+   $('#file-upload').change(function() {
+   var i = $(this).prev('label').clone();
+   var file = $('#file-upload')[0].files[0].name;
+   console.log(file)
+   $('#file_name').text(file)
+   });
    
    
-      </script> 
-
-
-      
-
-   
+</script> 
 {% endblock %}
-

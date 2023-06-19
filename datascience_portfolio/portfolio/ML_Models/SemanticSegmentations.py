@@ -1,11 +1,9 @@
 
-import argparse
 import os
 import platform
 import sys
 from pathlib import Path
 from django.conf import settings
-
 import torch
 
 FILE = Path(__file__).resolve()
@@ -16,20 +14,19 @@ ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 from models.common import DetectMultiBackend
 from utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
-from utils.general import (LOGGER, Profile, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,
-                           increment_path, non_max_suppression, print_args, scale_boxes, scale_segments,
-                           strip_optimizer, xyxy2xywh)
+from utils.general import (LOGGER, Profile, check_file, check_img_size, check_imshow, colorstr, cv2,
+                           increment_path, non_max_suppression, scale_boxes, scale_segments,
+                           strip_optimizer)
 from utils.plots import Annotator, colors, save_one_box
 from utils.segment.general import masks2segments, process_mask
-from utils.torch_utils import select_device, smart_inference_mode
+from utils.torch_utils import select_device
 
 
 def run(
         
-        weights=os.path.join(settings.BASE_DIR,'segmentation_yolo/yollo/yolov5s-seg.pt/'),
+        weights=os.path.join(settings.BASE_DIR,settings.SEGMENTATION),
         source=None,  # file/dir/URL/glob/screen/0(webcam)  #Image 
-        
-        data=os.path.join(settings.BASE_DIR,'segmentation_yolo/yollo/data/coco128.yaml'),  # dataset.yaml path
+        data=os.path.join(settings.BASE_DIR,settings.YAML_PATH),  # dataset.yaml path
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
         iou_thres=0.45,  # NMS IOU threshold
