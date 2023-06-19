@@ -15,18 +15,20 @@ import numpy as np
 import random
 import re
 import requests
+import json
+import pywsd
+import flashtext
 # import pke
 from flashtext import KeywordProcessor
 from pywsd.similarity import max_similarity
 from pywsd.lesk import adapted_lesk
-# from pywsd.lesk import simple_lesk
-# from pywsd.lesk import cosine_lesk
+from pywsd.lesk import simple_lesk
+from pywsd.lesk import cosine_lesk
 
 
 
 
 def generate_questions_with_answers(paragraph, limit=10):
-    raise
     def get_stopwords():
         return set(stopwords.words('english'))
 
@@ -58,126 +60,127 @@ def generate_questions_with_answers(paragraph, limit=10):
 
         return keyword_sentences
 
-    # def get_word_sense(sentence, word):
-    #     word = word.lower()
-    #     if len(word.split()) > 0:
-    #         word = word.replace(" ", "_")
-    #     synsets = wn.synsets(word, 'n')
-    #     if synsets:
-    #         wup = max_similarity(sentence, word, 'wup', pos='n')
-    #         adapted_lesk_output = adapted_lesk(sentence, word, pos='n')
-    #         lowest_index = min(synsets.index(wup), synsets.index(adapted_lesk_output))
-    #         return synsets[lowest_index]
-    #     else:
-    #         return None
+    def get_word_sense(sentence, word):
+        word = word.lower()
+        if len(word.split()) > 0:
+            word = word.replace(" ", "_")
+        synsets = wn.synsets(word, 'n')
+        if synsets:
+            wup = max_similarity(sentence, word, 'wup', pos='n')
+            adapted_lesk_output = adapted_lesk(sentence, word, pos='n')
+            lowest_index = min(synsets.index(wup), synsets.index(adapted_lesk_output))
+            return synsets[lowest_index]
+        else:
+            return None
 
-    # def get_wordnet_distractors(syn, word):
-    #     distractors = []
-    #     word = word.lower()
-    #     act_word = word
+    def get_wordnet_distractors(syn, word):
+        distractors = []
+        word = word.lower()
+        act_word = word
 
-    #     if len(word.split()) > 0:
-    #         word.replace(" ", "_")
+        if len(word.split()) > 0:
+            word.replace(" ", "_")
 
-    #     hypernyms = syn.hypernyms()
-    #     if len(hypernyms) == 0:
-    #         return distractors
+        hypernyms = syn.hypernyms()
+        if len(hypernyms) == 0:
+            return distractors
 
-    #     for each in hypernyms[0].hyponyms():
-    #         name = each.lemmas()[0].name()
-    #         if name == act_word:
-    #             continue
-    #         name = name.replace("_", " ")
-    #         name = " ".join(w.capitalize() for w in name.split())
-    #         if name is not None and name not in distractors:
-    #             distractors.append(name)
+        for each in hypernyms[0].hyponyms():
+            name = each.lemmas()[0].name()
+            if name == act_word:
+                continue
+            name = name.replace("_", " ")
+            name = " ".join(w.capitalize() for w in name.split())
+            if name is not None and name not in distractors:
+                distractors.append(name)
 
-    #     return distractors
+        return distractors
 
-    # def get_conceptnet_distractors(word):
-    #     word = word.lower()
-    #     act_word = word
+    def get_conceptnet_distractors(word):
+        word = word.lower()
+        act_word = word
 
-    #     if len(word.split()) > 0:
-    #         word = word.replace(" ", "_")
+        if len(word.split()) > 0:
+            word = word.replace(" ", "_")
 
-    #     distractors = []
-    #     url = "http://api.conceptnet.io/query?node=/c/en/%s/n&rel=/r/PartOf&start=/c/en/%s&limit=5" % (word, word)
-    #     obj = requests.get(url).json()
+        distractors = []
+        url = "http://api.conceptnet.io/query?node=/c/en/%s/n&rel=/r/PartOf&start=/c/en/%s&limit=5" % (word, word)
+        obj = requests.get(url).json()
 
-    #     for edge in obj['edges']:
-    #         link = edge['end']['term']
-    #         url2 = "http://api.conceptnet.io/query?node=%s&rel=/r/PartOf&end=%s&limit=10" % (link, link)
-    #         obj2 = requests.get(url2).json()
-    #         for edge in obj2['edges']:
-    #             word2 = edge['start']['label']
-    #             if word2 not in distractors and act_word.lower() not in word2.lower():
-    #                 distractors.append(word2)
+        for edge in obj['edges']:
+            link = edge['end']['term']
+            url2 = "http://api.conceptnet.io/query?node=%s&rel=/r/PartOf&end=%s&limit=10" % (link, link)
+            obj2 = requests.get(url2).json()
+            for edge in obj2['edges']:
+                word2 = edge['start']['label']
+                if word2 not in distractors and act_word.lower() not in word2.lower():
+                    distractors.append(word2)
 
-    #     return distractors
+        return distractors
 
-    # def generate_questions(paragraph):
-    #     stopwords = get_stopwords()
-    #     tokens = tokenize_text(paragraph)
-    #     filtered_tokens = filter_tokens(tokens, stopwords)
-    #     filtered_list = np.unique(filtered_tokens)
-    #     sentences = split_text_to_sentences(paragraph)
-    #     mapped_sentences = map_sentences_to_keywords(filtered_list, sentences)
-    #     mapped_answers = {}
+    def generate_questions(paragraph):
+        stopwords = get_stopwords()
+        tokens = tokenize_text(paragraph)
+        filtered_tokens = filter_tokens(tokens, stopwords)
+        filtered_list = np.unique(filtered_tokens)
+        sentences = split_text_to_sentences(paragraph)
+        mapped_sentences = map_sentences_to_keywords(filtered_list, sentences)
+        mapped_answers = {}
 
-    #     try:
-    #         for keyword in mapped_sentences:
-    #             word_sense = get_word_sense(mapped_sentences[keyword][0], keyword)
+        try:
+            for keyword in mapped_sentences:
+                word_sense = get_word_sense(mapped_sentences[keyword][0], keyword)
 
-    #             if word_sense:
-    #                 distractors = get_wordnet_distractors(word_sense, keyword)
+                if word_sense:
+                    distractors = get_wordnet_distractors(word_sense, keyword)
 
-    #                 if len(distractors) == 0:
-    #                     distractors = get_conceptnet_distractors(keyword)
+                    if len(distractors) == 0:
+                        distractors = get_conceptnet_distractors(keyword)
 
-    #                 if len(distractors) != 0:
-    #                     mapped_answers[keyword] = {
-    #                         'answer': keyword.capitalize(),
-    #                         'distractors': distractors
-    #                     }
-    #             else:
-    #                 distractors = get_conceptnet_distractors(keyword)
-    #                 if len(distractors) > 0:
-    #                     mapped_answers[keyword] = {
-    #                         'answer': keyword.capitalize(),
-    #                         'distractors': distractors
-    #                     }
-    #     except:
-    #         pass
+                    if len(distractors) != 0:
+                        mapped_answers[keyword] = {
+                            'answer': keyword.capitalize(),
+                            'distractors': distractors
+                        }
+                else:
+                    distractors = get_conceptnet_distractors(keyword)
+                    if len(distractors) > 0:
+                        mapped_answers[keyword] = {
+                            'answer': keyword.capitalize(),
+                            'distractors': distractors
+                        }
+        except:
+            pass
 
-    #     questions = []
-    #     iterator = 1
+        questions = []
+        iterator = 1
 
-    #     for keyword in mapped_answers:
-    #         sentence = mapped_sentences[keyword][0]
-    #         p = re.compile(keyword, re.IGNORECASE)
-    #         question = p.sub("________", sentence)
+        for keyword in mapped_answers:
+            sentence = mapped_sentences[keyword][0]
+            p = re.compile(keyword, re.IGNORECASE)
+            question = p.sub("________", sentence)
 
-    #         options = [keyword.capitalize()] + mapped_answers[keyword]['distractors']
-    #         options = options[:4]
-    #         random.shuffle(options)
+            options = [keyword.capitalize()] + mapped_answers[keyword]['distractors']
+            options = options[:4]
+            random.shuffle(options)
 
-    #         question_data = {
-    #             'question_number': iterator,
-    #             'question_text': question,
-    #             'options': options,
-    #             'answer': mapped_answers[keyword]['answer']
-    #         }
+            question_data = {
+                'question_number': iterator,
+                'question_text': question,
+                'options': options,
+                'answer': mapped_answers[keyword]['answer']
+            }
 
-    #         questions.append(question_data)
-    #         iterator += 1
+            questions.append(question_data)
+            iterator += 1
 
-    #     return questions
+        return questions
 
-    # def generate_questions_limit(paragraph, limit):
-    #     questions = generate_questions(paragraph)
-    #     if limit > len(questions):
-    #         limit = len(questions)
-    #     return questions[:limit]
+    def generate_questions_limit(paragraph, limit):
+        questions = generate_questions(paragraph)
+        if limit > len(questions):
+            limit = len(questions)
+        return questions[:limit]
 
-    # return generate_questions_limit(paragraph, limit)
+    return generate_questions_limit(paragraph, limit)
+
