@@ -25,7 +25,19 @@
                   </p>
             </div>
          </div>
+         <div class="card card box-shadow  mx-auto my-5 border-color" >
+          <h5 class="card-header heading-color">Sample paragraph</h5>
+          <div class="card-body card-bg">
+             <p class="card-text">This project generates multiple-choice questions based on a given paragraph. It aims to automate the process of generating questions and answer options. 
+              The Industrial Revolution was a period of significant change and innovation that occurred in the late 18th century and continued into the 19th century. It marked a transition from handmade production methods to machine-based manufacturing processes. One of the key inventions of this era was the steam engine, which revolutionized transportation and industry. The steam engine enabled the development of steam-powered locomotives and steamships, allowing goods and people to be transported more quickly and efficiently. Additionally, the invention of the spinning jenny and the power loom mechanized textile production, leading to the growth of the textile industry. These advancements in technology and industry had profound social and economic impacts, transforming society and leading to the rise of urbanization and the formation of a capitalist economy.
+                </p>
+          </div>
+       </div>
+     
+          </div>
 
+   
+         
          <div class="card mb-4 border-color ">
             <form name="form1"  action="{% url 'mcq' %}", method="POST">
                 {% csrf_token %}
@@ -114,6 +126,8 @@
       <!--end -->
    </main>
 </div>
+
+
 
 <script>
   function showResult(){
@@ -209,6 +223,10 @@
 
     
 })
+
 </script>
+
+
+
 {% endblock %}
 
