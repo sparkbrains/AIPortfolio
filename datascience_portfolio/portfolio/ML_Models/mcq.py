@@ -15,20 +15,13 @@ import numpy as np
 import random
 import re
 import requests
-import json
-import pywsd
-import flashtext
-# import pke
-from flashtext import KeywordProcessor
-from pywsd.similarity import max_similarity
-from pywsd.lesk import adapted_lesk
-from pywsd.lesk import simple_lesk
-from pywsd.lesk import cosine_lesk
-
-
 
 
 def generate_questions_with_answers(paragraph, limit=10):
+    from flashtext import KeywordProcessor
+    from pywsd.similarity import max_similarity
+    from pywsd.lesk import adapted_lesk
+    
     def get_stopwords():
         return set(stopwords.words('english'))
 
