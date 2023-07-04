@@ -116,8 +116,11 @@
                </div>
                <div class="card-body border-color">
 
-
+                  {% if not predicted_result is none %}
                   <img src="{% static 'stock_prediction/' %}{{resulted_image}}"  id="preview" class="img-thumbnail" style="height: 72%;width: 100%;">
+                  {% else %}
+                  <center><h1>Please upload the correct file.</h1></center>
+                  {% endif %}
                
             </div>
       </div>
