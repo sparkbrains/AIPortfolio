@@ -41,7 +41,8 @@ class Summarising(View):
     def post(self, request, *args, **kwargs):
         raw_text = request.POST.get('user_input')
         result= summarizer(raw_text)
-        (summary, t1, raw_text_length,summary_len) = result
+        (raw_text, raw_text_length,summary,summary_len )=result
+        # (summary, t1, raw_text_length,summary_len) = result
         return render(request,'models_view/summarising.html',{'summary':summary,"raw_text":raw_text,"summary_len":summary_len,"raw_text_length":raw_text_length})
 
 

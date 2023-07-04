@@ -34,14 +34,22 @@
           <section class="message-area">
              <div class="container-fluid">
                 <div class="row">
+                  
                    <div class="col-12">
+                     <div class="alert alert-primary d-none" id="alert_section" role="alert">
+                        Please renew ChatGPT Key3.
+                      </div>
                       <div class="chat-area">
+                      
                          <!-- chatbox -->
                          <div class="chatbox">
                             <div class="modal-dialog-scrollable">
+                              
                                <div class="modal-content">
                                   <div class="msg-head" style="background-color:#337E50">
+                                    
                                      <div class="row">
+                                    
                                         <div class="col-8">
                                            <div class="d-flex align-items-center">
                                               <div class="flex-grow-1 ms-3">
@@ -87,6 +95,15 @@
        <!--end-->
     </main>
  </div>
+
+ <script>
+   function show_alert(){
+   $("#alert_section").removeClass('d-none');
+   }
+</script>
+
+
+
  <script>
     $('.chat_btn').click(function () {
        $("#Chat_form").validate({
@@ -105,7 +122,8 @@
            submitHandler: function (form) {
                message = $("#Chat_form").find('#user_input').val()
                $(".show_spinner").removeClass('d-none');
-    
+               show_alert()
+
                $.ajax({
                    type: "POST",
                    url: "/chat-gpt/",

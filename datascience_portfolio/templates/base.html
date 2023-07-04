@@ -29,13 +29,15 @@
     
         {% endblock %}
         {% block extra_js %}
-    
+       
         {% endblock %}
     </head>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="/">Portfolio</a>
+            {% comment %} <a class="navbar-brand ps-3" href="/">Portfolio</a> {% endcomment %}
+            <a href="/"><img src="{% static 'logo.png' %}" alt="HTML tutorial" style="width:125px;height:52px;"></a>
+
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
     
@@ -45,10 +47,10 @@
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
-                            <a class="nav-link" href="http://127.0.0.1:8050/" target="_blank">
+                            {% comment %} <a class="nav-link" href="http://127.0.0.1:8050/" target="_blank">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Employee Attrition Dashboard
-                            </a>
+                            </a> {% endcomment %}
                             <a class="nav-link" href="{% url 'custom_object_detection' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-search"></i></div>
                                 Custom Object Detection
@@ -81,6 +83,7 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-comment-alt"></i></div>
                                 Chat GPT
                             </a>
+                          
                             <a class="nav-link" href="{% url 'mcq' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-question-circle"></i></div>
                                 MCQ
