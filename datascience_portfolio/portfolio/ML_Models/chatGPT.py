@@ -8,11 +8,15 @@ def get_completion_from_messages(message):
     messages = [{"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": message}]
     
+    
     response = openai.ChatCompletion.create(
         model=chat_models,
         messages=messages
     )
     return str(response.choices[0].message['content'])
+
+ 
+        
 
 
 

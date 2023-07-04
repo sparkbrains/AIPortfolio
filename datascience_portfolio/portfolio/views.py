@@ -42,7 +42,6 @@ class Summarising(View):
         raw_text = request.POST.get('user_input')
         result= summarizer(raw_text)
         (raw_text, raw_text_length,summary,summary_len )=result
-        # (summary, t1, raw_text_length,summary_len) = result
         return render(request,'models_view/summarising.html',{'summary':summary,"raw_text":raw_text,"summary_len":summary_len,"raw_text_length":raw_text_length})
 
 
@@ -132,6 +131,7 @@ class ChatGPT(View):
      
         message = request.POST.get('message')
         response=get_completion_from_messages(message)
+        
         data = {"sender":message,
                 "response":response
                 }
