@@ -75,6 +75,8 @@ def summarizer(paragraph):
     summary_len = len(summary.split(' '))
     raw_text = paragraph
     raw_text_len = len(paragraph.split(' '))
+
+    # if summary_len <= 5:
+    #     return "PLease enter a valid paragraph"
     
-        
     return raw_text,raw_text_len,summary,summary_len

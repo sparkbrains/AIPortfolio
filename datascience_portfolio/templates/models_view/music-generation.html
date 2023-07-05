@@ -49,8 +49,12 @@
                      <span class="visually-hidden">Loading...</span>
                   </div>
                   <span id="error_div" style="display: none;color:red;"> Please Upload the MID file, File cannot be empty.</span>
+                  <span id="min_size_error" style="display: none;color:red;"> Please select a file greator than 4KB.</span>
+
+                  <span id="max_size_error" style="display: none;color:red;"> Please select a file less than 1MB.</span>
+                  <p id="invalid_file" style="color:red">{{invalid_file}}</p>
                </label>
-               <button  type="submit" class="formbtn btn-css">Submit</button>
+               <button  id="submit-button" type="submit" class="formbtn btn-css">Submit</button>
             </form>
          </div>
       </div>
@@ -108,7 +112,7 @@
    {
    $("#spinner_div").show();
    $("#error_div").hide();
-   
+
    var div= document.createElement("div");
       div.className += "overlay";
       document.body.appendChild(div);
@@ -131,6 +135,8 @@
          return false;
      }else{
         $("#image_error").hide();
+        $("#invalid_file").addClass('d-none');
+
      $("#submit-button").prop('disabled',false);
      $("#error_div").hide();
    
@@ -140,10 +146,43 @@
    $('#file-upload').change(function() {
    var i = $(this).prev('label').clone();
    var file = $('#file-upload')[0].files[0].name;
-   console.log(file)
    $('#file_name').text(file)
    });
    
+
+   let fileInput = document.getElementById("file-upload");
+   let fileSubmit = document.getElementById("submit-button");
+
+   fileInput.addEventListener("change", function () {
+
+    if (fileInput.files.length > 0) {
+      // Check if any file is selected.
+          for (const i = 0; i <= fileInput.files.length - 1; i++) {
    
-</script> 
+              const fsize = fileInput.files.item(i).size;
+              const file = Math.round((fsize / 1024));
+              // The size of the file.
+              {% comment %} if (file <= 5) {
+                  $("#min_size_error").show();
+                  fileSubmit.disabled = true;
+
+              }{% endcomment %}
+              if (file > 1024) { 
+                  $("#max_size_error").show();
+                  fileSubmit.disabled = true;
+
+              } else {
+               $("#min_size_error").hide();
+               $("#max_size_error").hide();
+
+               fileSubmit.disabled = false;
+
+
+              } 
+          }
+         }
+      });
+</script>
+
+   
 {% endblock %}

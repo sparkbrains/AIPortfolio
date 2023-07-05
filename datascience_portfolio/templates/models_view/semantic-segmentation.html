@@ -18,7 +18,7 @@
                <h5 class="card-title">Semantic Segmentation</h5>
                <p class="card-text">Semantic segmentation aims to assign a specific label or class to every pixel in an image, effectively dividing the image into distinct regions based on their semantic meaning. In this model we are having upto 80 different categories.
                   <br><br>
-                  <b><i>Input</i></b> - Any image having person, cars, boats, bicycles etc <br>
+                  <b><i>Input</i></b> - Any image having person, cars, boats, bicycles etc.<br>
                   <b><i>Output</i></b> - semantic segmented image with different colour for each  category.
                   </p>
             </div>
@@ -50,6 +50,8 @@
                   </div>
                   <span id="error_div" style="display: none;color:red;">Please Upload the file, File cannot be empty.</span>
                   <span id="image_error" style="display: none;color:red;">Please Upload the JPG and PNG only</span>
+                  <span id="size_error" style="display: none;color:red;">Please select a file less than 1MB.</span>
+
 
                </label>
                
@@ -167,6 +169,24 @@
            
       }          
       
+
+      let fileInput = document.getElementById("file-upload");
+      let fileSubmit = document.getElementById("submit-button");
+      fileInput.addEventListener("change", function () {
+         if (fileInput.files.length > 0) {
+           const fileSize = fileInput.files.item(0).size;
+           const fileMb = fileSize / 1024 ** 2;
+           if (fileMb > 1) {
+             $("#size_error").show();
+
+             fileSubmit.disabled = true;
+           } else {
+            $("#size_error").hide();
+             fileSubmit.disabled = false;
+           }
+         }
+       });
+
    </script>
   
 

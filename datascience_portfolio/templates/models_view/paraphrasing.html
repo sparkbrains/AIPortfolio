@@ -23,7 +23,7 @@
             <div class="card-body card-bg">
                <h5 class="card-title">Text Paraphrasing</h5>
                <p class="card-text"> Text paraphrasing refers to the process of expressing a given text or sentence in a different, but equivalent, form while retaining the original meaning. It involves rephrasing the content using different words or sentence structures.<br><br>
-                  <b><i>Input</i></b> - The input to a text paraphrasing system is a piece of text or a sentence<br>
+                  <b><i>Input</i></b> - The input to a text paraphrasing system is a piece of text or a sentence.<br>
                   <b><i>Output</i></b> - The output is a rewritten version that conveys the same information with altered wording.We use pre pre-trained "Vamsi/T5_Paraphrase_Paws"  model and NLP in it.
 
                   </p>
@@ -37,14 +37,16 @@
                <p class="mb-0">
                 <label for="exampleFormControlTextarea1" class="form-label">Enter the text below.
                 </label>
-                <textarea  id="user_input" name="user_input" class="form-control border-color" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <textarea  oninput="char_limit()" id="user_input" name="user_input" class="form-control border-color" id="exampleFormControlTextarea1" rows="3"></textarea>
                 <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
                     <span class="visually-hidden">Loading...</span>
                   </div>
                   <span id="error_div" style="display: none;color:red;">Field can not be empty.</span>
+                  <span id="min_char_error" style="display: none;color:red;"> Please write minimum 200 characters..</span>
+
 
                   <br>
-                  <button onclick="Spinner()"  type="submit" class="formbtn">Submit</button>
+                  <button id="submit-button" onclick="Spinner()"  type="submit" class="formbtn">Submit</button>
 
             </div>
         </form>
@@ -110,7 +112,33 @@
    return true; 
    }
    }
+
+
+
+   let text = document.getElementById("user_input");
+   let fileSubmit = document.getElementById("submit-button");
+
+function char_limit(){
+
+    if (text.value.length < 200) {   
+      
+         $("#min_char_error").show();
+         fileSubmit.disabled = true;
+
+       }
+
+   else{   
+      
+         $("#min_char_error").hide();
+         fileSubmit.disabled = false;
+
+       }
+       
+   }
    </script>
+
+
+   
 {% endblock %}
 
 

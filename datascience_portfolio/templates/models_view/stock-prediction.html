@@ -60,6 +60,9 @@
              
                   <span id="error_div" style="display: none;color:red;">Please Upload the file, File cannot be empty.</span>
                   <span id="days_input_error" style="display: none;color:red;">Days field can not be blank.</span>
+                  <span id="min_size_error" style="display: none;color:red;"> Please select a file greator than 20KB.</span>
+
+                  <span id="max_size_error" style="display: none;color:red;"> Please select a file less than 1MB.</span>
 
                </label>
                
@@ -171,6 +174,44 @@
       console.log(file)
       $('#file_name').text(file)
     });
+
+
+
+    let fileInput = document.getElementById("file-upload");
+    let fileSubmit = document.getElementById("submit-button");
+ 
+    fileInput.addEventListener("change", function () {
+ 
+     if (fileInput.files.length > 0) {
+       // Check if any file is selected.
+           for (const i = 0; i <= fileInput.files.length - 1; i++) {
+    
+               const fsize = fileInput.files.item(i).size;
+               const file = Math.round((fsize / 1024));
+               // The size of the file.
+               if (file <= 20) {
+                   $("#min_size_error").show();
+                   $("#max_size_error").hide();
+
+                   fileSubmit.disabled = true;
+ 
+               } else if (file > 1024) {
+                   $("#max_size_error").show();
+                   $("#min_size_error").hide();
+
+                   fileSubmit.disabled = true;
+ 
+               } else {
+                $("#min_size_error").hide();
+                $("#max_size_error").hide();
+ 
+                fileSubmit.disabled = false;
+ 
+ 
+               }
+           }
+          }
+       });
 
 
 </script>  

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+
 <script type="module">
     import Autogrow from "https://cdn.jsdelivr.net/npm/vanilla-autogrow@1.0.0/autogrow.min.js";
     var inst = new Autogrow();
@@ -36,30 +38,32 @@
      
           </div>
 
-   
-         
+          {% comment %} <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          {% endcomment %}
+
+       
          <div class="card mb-4 border-color ">
-            <form name="form1"  action="{% url 'mcq' %}", method="POST">
+            <form name="form1" onsubmit="return Spinner()" action="{% url 'mcq' %}", method="POST">
                 {% csrf_token %}
             <div class="card-body ">
                <p class="mb-0">
                 <label for="exampleFormControlTextarea1" class="form-label">Enter the text below.
                 </label>
                 <textarea  id="user_input" name="user_input" class="form-control border-color" id="exampleFormControlTextarea1" rows="3" minlength="300" required></textarea>
-                <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                  </div>
+               
                   <span id="error_div" style="display: none;color:red;">Field can not be empty.</span>
 
                   <br>
-                  <button  type="submit" class="formbtn">Submit</button>
+                  {% comment %} <button  type="submit" class="formbtn">Submit</button> {% endcomment %}
+                  <button type="submit" class="formbtn"><i class="fa fa-paper-plane " aria-hidden="true"></i> Submit
+                    <span class="spinner-border spinner-border-sm show_spinner d-none" role="status" aria-hidden="true"></span>
+                    <span class="visually-hidden show_spinner">Loading...</span>
+                    </button>
 
             </div>
         </form>
-
-        <div class="spinner-border m-5 d-none" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
 
          </div>
             {% endif %}
@@ -130,11 +134,17 @@
 
 
 <script>
-  function showResult(){
+  function Spinner()
+   {
 
-  $("#result_div").removeClass('d-none');
-
-  }
+   $(".show_spinner").removeClass('d-none');
+   
+   var div= document.createElement("div");
+      div.className += "overlay";
+      document.body.appendChild(div);
+   return true; 
+   }
+   
 
   function validateEmptyFields(){
 
@@ -176,7 +186,12 @@
   </script>
 
  <script>
+
+
+
+
   $('.mcq_form_submit').click(function () {
+    
 
     var mcq_array = new Array();
     
@@ -220,8 +235,6 @@
   });
 
 }
-
-    
 })
 
 </script>

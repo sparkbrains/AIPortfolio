@@ -42,7 +42,12 @@ class Summarising(View):
         raw_text = request.POST.get('user_input')
         result= summarizer(raw_text)
         (raw_text, raw_text_length,summary,summary_len )=result
-        return render(request,'models_view/summarising.html',{'summary':summary,"raw_text":raw_text,"summary_len":summary_len,"raw_text_length":raw_text_length})
+        if summary == '':
+            inavlid_summary = "Please enter meaningfull content."
+            return render(request,'models_view/summarising.html',{'inavlid_summary':inavlid_summary})
+
+        else:
+            return render(request,'models_view/summarising.html',{'summary':summary,"raw_text":raw_text,"summary_len":summary_len,"raw_text_length":raw_text_length})
 
 
 
@@ -86,10 +91,12 @@ class MusicGenerationn(View):
             music = music
         )
         music = music_conversion(music_obj.music.path)
-        split_path = music.split('static/')
-        audio_path = str(split_path[1])
-        return render(request,'models_view/music-generation.html',{"music":audio_path,"original_sound":music_obj})
-
+        try:
+            split_path = music.split('static/')
+            audio_path = str(split_path[1])
+            return render(request,'models_view/music-generation.html',{"music":audio_path,"original_sound":music_obj})
+        except:
+            return render(request,'models_view/music-generation.html',{"invalid_file":"invalid file"})
 
 
 class StockPredictions(View):
@@ -150,6 +157,7 @@ class MCQ(View):
                 questions_ob.all().delete()
                 Options.objects.all().delete()
                 questions = generate_questions_with_answers(request.POST.get('user_input'), limit=10)
+                print(questions,">>>>>>>>>>>>>>>>>")
                 for question in questions:
                     options =  question['options']
                     answer = question['answer']

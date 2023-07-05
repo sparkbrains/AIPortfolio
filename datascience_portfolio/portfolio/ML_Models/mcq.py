@@ -15,12 +15,12 @@ import numpy as np
 import random
 import re
 import requests
+from flashtext import KeywordProcessor
+from pywsd.similarity import max_similarity
+from pywsd.lesk import adapted_lesk
 
 
 def generate_questions_with_answers(paragraph, limit=10):
-    from flashtext import KeywordProcessor
-    from pywsd.similarity import max_similarity
-    from pywsd.lesk import adapted_lesk
     
     def get_stopwords():
         return set(stopwords.words('english'))
@@ -144,7 +144,7 @@ def generate_questions_with_answers(paragraph, limit=10):
                         }
         except:
             pass
-
+        
         questions = []
         iterator = 1
 

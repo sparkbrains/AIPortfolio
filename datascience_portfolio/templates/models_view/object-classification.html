@@ -14,9 +14,9 @@
          <div class="card-body card-bg">
             <h5 class="card-title">X-Ray classification using CNN</h5>
             <p class="card-text">This project aims to explore the use of machine learning algorithms for X-ray analysis in the diagnosis of pneumonia, tuberculosis, and Covid-19. The results of this project may have important implications for improving the accuracy and speed of X-ray diagnosis, ultimately leading to better patient outcomes and reduced healthcare costs.<br><br>
-               <b><i>Input</i></b> - The chest X-Ray image
+               <b><i>Input</i></b> - The chest X-Ray image.
                <br>
-               <b><i>Output</i></b> - Pneumonia/Tuberculosis/Covid-19/Normal .
+               <b><i>Output</i></b> - Pneumonia/Tuberculosis/Covid-19/Normal.
             </p>
          </div>
       </div>
@@ -42,6 +42,8 @@
                   </div>
                   <span id="error_div" style="display: none;color:red;">Please Upload the file, File cannot be empty.</span>
                   <span id="image_error" style="display: none;color:red;">Please Upload the JPG and PNG only</span>
+                  <span id="size_error" style="display: none;color:red;">Please select a file less than 1MB.</span>
+
                   <div id="response" class="hidden">
                      <div id="messages"></div>
                      <progress class="progress" id="file-progress" value="0">
@@ -145,6 +147,24 @@
    
            }
            
-      }              
+      }
+      
+      let fileInput = document.getElementById("file-upload");
+      let fileSubmit = document.getElementById("submit-button");
+      fileInput.addEventListener("change", function () {
+         if (fileInput.files.length > 0) {
+           const fileSize = fileInput.files.item(0).size;
+           const fileMb = fileSize / 1024 ** 2;
+           if (fileMb > 1) {
+             $("#size_error").show();
+
+             fileSubmit.disabled = true;
+           } else {
+            $("#size_error").hide();
+             fileSubmit.disabled = false;
+           }
+         }
+       });
+
 </script>
 {% endblock %}

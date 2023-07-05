@@ -21,25 +21,27 @@
                <p class="card-text">Text summarization is the process of generating a concise and coherent summary of a longer text, such as an article, document, or news story. It aims to capture the main points and key information of the original text in a condensed form.
                   The summary should provide a coherent and informative overview of the original text, highlighting the most important aspects and key details.Mainly we use NLTK Library for this.
                   <br><br>
-                  <b><i>Input</i></b> - The input to a text summarization system is typically a longer piece of text,. <br>
-                  <b><i>Output</i></b> -The output is a shorter summary that captures the essential content..<br><br>
+                  <b><i>Input</i></b> - The input to a text summarization system is typically a longer piece of text. <br>
+                  <b><i>Output</i></b> -The output is a shorter summary that captures the essential content.<br><br>
                </p>
             </div>
          </div>
          <div class="card mb-4 border-color ">
-            <form name="form1" onsubmit="return Spinner()" action="{% url 'summarising' %}", method="POST">
+            <form name="form1" onsubmit="return Spinner();" action="{% url 'summarising' %}", method="POST">
                {% csrf_token %}
                <div class="card-body ">
                   <p class="mb-0">
                      <label for="exampleFormControlTextarea1" class="form-label">Enter the text below.
                      </label>
-                     <textarea  id="user_input" name="user_input" class="form-control border-color" id="exampleFormControlTextarea1" rows="3"></textarea>
+                     <textarea oninput="char_limit()"  id="user_input" name="user_input" class="form-control border-color" id="exampleFormControlTextarea1" rows="3"></textarea>
                   <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
                      <span class="visually-hidden">Loading...</span>
                   </div>
                   <span id="error_div" style="display: none;color:red;">Field can not be empty.</span>
+                  <span id="min_char_error" style="display: none;color:red;"> Please write minimum 200 characters..</span>
+                  <p style="color:red">{{inavlid_summary}}</p>
                   <br>
-                  <button  type="submit" class="formbtn">Submit</button>
+                  <button id="submit-button" type="submit" class="formbtn">Submit</button>
                </div>
             </form>
             <div class="spinner-border m-5 d-none" role="status">
@@ -47,7 +49,7 @@
             </div>
          </div>
          {% endif %}
-         {% if summary %}
+   {% if summary  %}
          <div class="col-sm-12">
             <a href="{% url 'summarising' %}"><button type="submit" class="formbtn ">Input Again</button><a/>
          </div>
@@ -57,11 +59,13 @@
                <div class="row">
                   <div class="col-lg-6 mb-6">
                      <div class="card border-color ">
+                    
+
                         <div class="card-body">{{raw_text}}</canvas></div>
                         <div class="card-body card-body card-bg">
                            <h5 class="card-title">Raw Text | Length : {{raw_text_length}} </h5>
                            </h5>
-                           
+
 
                            <p class="card-text"></p>
                         </div>
@@ -69,7 +73,7 @@
                   </div>
                   <div class="col-lg-6 mb-6">
                      <div class="card border-color ">
-                        <div class="card-body">{{summary}}</canvas></div>
+                        <div class="card-body"><span id="resulted_summary">{{summary}}</span></canvas></div>
                         <div class="card-body card-body card-bg">
                            <h5 class="card-title">Summary | Length : {{summary_len}} </h5>
                            <p class="card-text"></p>
@@ -81,6 +85,9 @@
       </div>
 </div>
 </section>
+{% else %}
+<div class="card-body" style="display:none" id="no_result_erro" >No summary</canvas></div>
+
 {% endif %}
 </main>
 </div>
@@ -99,8 +106,45 @@
    var div= document.createElement("div");
    div.className += "overlay";
    document.body.appendChild(div);
+   $("#error_div").hide();
+
    return true; 
    }
+
+
+
    }
+
+   let text = document.getElementById("user_input");
+   let fileSubmit = document.getElementById("submit-button");
+
+function char_limit(){
+
+    if (text.value.length < 200) {   
+      
+         $("#min_char_error").show();
+         fileSubmit.disabled = true;
+         $("#error_div").hide();
+
+       }
+
+   if(text.value.length > 200){
+         $("#min_char_error").hide();
+         fileSubmit.disabled = false;
+         $("#error_div").hide();
+
+       }
+       
+   if(text.value.length <= 0){
+         $("#min_char_error").hide();
+         fileSubmit.disabled = false;
+         $("#error_div").hide();
+
+       }
+       
+  
+   }
+
+  
 </script>  
 {% endblock %}
