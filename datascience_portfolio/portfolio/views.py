@@ -157,28 +157,33 @@ class MCQ(View):
                 questions_ob.all().delete()
                 Options.objects.all().delete()
                 questions = generate_questions_with_answers(request.POST.get('user_input'), limit=10)
-                print(questions,">>>>>>>>>>>>>>>>>")
-                for question in questions:
-                    options =  question['options']
-                    answer = question['answer']
-                    questions_obj = Questions.objects.create(
-                        number = question['question_number'],
-                        questions = question['question_text'],
-                        correct_answer = answer
-                    )
-                    opt = []
-                    for option in options:
-                        opt.append(Options.objects.create(
-                        options = option
-                    ))
+                if questions:
+                    for question in questions:
+                        options =  question['options']
+                        answer = question['answer']
+                        questions_obj = Questions.objects.create(
+                            number = question['question_number'],
+                            questions = question['question_text'],
+                            correct_answer = answer
+                        )
+                        opt = []
+                        for option in options:
+                            opt.append(Options.objects.create(
+                            options = option
+                        ))
 
-                    
-                    for options_value in opt:
-                        questions_obj.options.add(options_value)
-            
-                questions_ = questions_ob.all()  
-                questions_count = questions_.count()
-                return render(request,'models_view/mcq.html',{"questions":questions_, "count":questions_count})
+                        
+                        for options_value in opt:
+                            questions_obj.options.add(options_value)
+                
+                    questions_ = questions_ob.all()  
+                    questions_count = questions_.count()
+
+                    return render(request,'models_view/mcq.html',{"questions":questions_, "count":questions_count})
+                else:
+                    invalid_paragraph = "Please enter the right content to get the MCQ's."
+                    return render(request,'models_view/mcq.html',{"invalid_paragraph":invalid_paragraph})
+
 
 
             if request.POST.get('request_type')=='ajax_request':

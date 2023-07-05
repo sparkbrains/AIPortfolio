@@ -54,6 +54,8 @@
                 <textarea  id="user_input" name="user_input" class="form-control border-color" id="exampleFormControlTextarea1" rows="3" minlength="300" required></textarea>
                
                   <span id="error_div" style="display: none;color:red;">Field can not be empty.</span>
+                  <p style="color:red;">{{invalid_paragraph}}</p>
+
 
                   <br>
                   {% comment %} <button  type="submit" class="formbtn">Submit</button> {% endcomment %}
@@ -99,7 +101,6 @@
                 {% endfor %}
                 <span  style="color:red;" id="span{{question.id}}" class="d-none "> This answer was wrong. </span>
                 <span  style="color:red;" id="empty_error{{question.id}}" class="d-none "> Please select atleast one option. </span>
-
             </div>
 
           </div>
