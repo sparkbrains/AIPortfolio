@@ -121,14 +121,16 @@
 function char_limit(){
 
     if (text.value.length < 200) {   
-      
+        $("#error_div").hide()
+
          $("#min_char_error").show();
          fileSubmit.disabled = true;
 
        }
 
    else{   
-      
+    $("#error_div").hide()
+
          $("#min_char_error").hide();
          fileSubmit.disabled = false;
 
