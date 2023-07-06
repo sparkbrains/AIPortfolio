@@ -3,14 +3,23 @@ from nltk.tokenize import sent_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from django.conf import settings
+import os
 
 # Initialize NLTK modules
-# nltk.download('punkt')
+
+# nltk.download('punkt' )
 # nltk.download('stopwords')
-path1 = settings.BASE_DIR,settings.N_PATH1
-path2 = settings.BASE_DIR,settings.N_PATH2
-nltk.data.path.append(path1)
-nltk.data.path.append(path2)
+
+
+if os.path.isdir(settings.DIR_PATH):
+    path1 = settings.BASE_DIR,settings.N_PATH1
+    path2 = settings.BASE_DIR,settings.N_PATH2
+    nltk.data.path.append(path1)
+    nltk.data.path.append(path2)
+else:
+    nltk.download('punkt' , download_dir=settings.DIR_PATH)
+    nltk.download('stopwords' , download_dir=settings.DIR_PATH)
+
 
 
 
