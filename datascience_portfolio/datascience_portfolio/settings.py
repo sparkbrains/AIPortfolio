@@ -163,3 +163,7 @@ YAML_PATH = 'ML_Models/segmentation_yolo/yollo/data/coco128.yaml'
 
 #Dashboard
 CSV_PATH = 'ML_Models/dashboard/Employee-Attrition.csv'
+
+#NLTK
+N_PATH1 = 'ML_Models/nltk_data/corpora'
+N_PATH2 = 'ML_Models/nltk_data/tokenizers/punkt'

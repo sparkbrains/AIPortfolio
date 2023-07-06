@@ -2,10 +2,17 @@ import nltk
 from nltk.tokenize import sent_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+from django.conf import settings
 
 # Initialize NLTK modules
-nltk.download('punkt')
-nltk.download('stopwords')
+# nltk.download('punkt')
+# nltk.download('stopwords')
+path1 = settings.BASE_DIR,settings.N_PATH1
+path2 = settings.BASE_DIR,settings.N_PATH2
+nltk.data.path.append(path1)
+nltk.data.path.append(path2)
+
+
 
 def summarizer(paragraph):
     # Tokenize the paragraph into sentences
