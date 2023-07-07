@@ -133,32 +133,35 @@
       if(allowedExtension.indexOf(type)>-1)
       {
          $("#image_error").hide();
-         $("#submit-button").prop('disabled',false);
+         $("#submit-button").removeClass('d-none');
          $("#output").show()
          $("#error_div").hide();
       }else{
          $("#image_error").show();
-         $("#submit-button").prop('disabled',true);
+         $("#submit-button").addClass('d-none');
          $("#output").hide()
            }
            
       }          
       
-      let fileInput = document.getElementById("file-upload");
-      let fileSubmit = document.getElementById("submit-button");
-      fileInput.addEventListener("change", function () {
-         if (fileInput.files.length > 0) {
-           const fileSize = fileInput.files.item(0).size;
-           const fileMb = fileSize / 1024 ** 2;
-           if (fileMb > 1) {
-             $("#size_error").show();
 
-             fileSubmit.disabled = true;
-           } else {
-            $("#size_error").hide();
-             fileSubmit.disabled = false;
-           }
-         }
-       });
+</script>
+<script>
+   let fileInput = document.getElementById("file-upload");
+   let fileSubmit = document.getElementById("submit-button");
+   fileInput.addEventListener("change", function () {
+      if (fileInput.files.length > 0) {
+        const fileSize = fileInput.files.item(0).size;
+        const fileMb = fileSize / 1024 ** 2;
+        if (fileMb > 1) {
+          $("#size_error").show();
+
+          fileSubmit.disabled = true;
+        } else {
+         $("#size_error").hide();
+          fileSubmit.disabled = false;
+        }
+      }
+    });
 </script>
 {% endblock %}

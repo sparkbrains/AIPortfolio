@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -165,6 +167,16 @@ YAML_PATH = 'ML_Models/segmentation_yolo/yollo/data/coco128.yaml'
 CSV_PATH = 'ML_Models/dashboard/Employee-Attrition.csv'
 
 #NLTK 
-DIR_PATH = 'ML_Models/nltk_data'
-N_PATH1 = 'ML_Models/nltk_data/corpora'
-N_PATH2 = 'ML_Models/nltk_data/tokenizers/punkt'
+
+
+DIR_CORPORA = os.path.join(os.getenv('NLTK'),'/corpora')
+DIR_WORDNET = os.path.join(os.getenv('NLTK'),'/corpora/wordnet')
+
+DIR_PUNKT = os.path.join(os.getenv('NLTK'),'/tokenizers/punkt')
+BASE_D=os.getenv('NLTK')
+BASE_N=os.path.join(os.getenv('NLTK'),'/tokenizers')
+
+N_PATH1 = os.path.join(os.getenv('NLTK'),'corpora')
+N_PATH2 = os.path.join(os.getenv('NLTK'),'/tokenizers/punkt')
+N_PATH3 = os.path.join(os.getenv('NLTK'),'/corpora/wordnet')
+

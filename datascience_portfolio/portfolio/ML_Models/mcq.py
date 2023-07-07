@@ -1,13 +1,6 @@
-
 import warnings
 warnings.filterwarnings("ignore")
 import nltk
-# nltk.download('averaged_perceptron_tagger')
-# nltk.download('wordnet')
-# nltk.download('stopwords')
-# nltk.download('punkt')
-# nltk.download('popular')
-from nltk.corpus import wordnet as wn
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize import word_tokenize
@@ -16,12 +9,18 @@ import random
 import re
 import requests
 from flashtext import KeywordProcessor
-from pywsd.similarity import max_similarity
-from pywsd.lesk import adapted_lesk
+from django.conf import settings
+import os
+# if os.path.isdir(settings.DIR_WORDNET):
+#     path1 = os.path.join(settings.BASE_DIR,settings.N_PATH3)
+#     nltk.data.path.append(path1)
+
+path1 = settings.N_PATH3
+nltk.data.path.append(path1)
+from nltk.corpus import wordnet as wn
 
 
 def generate_questions_with_answers(paragraph, limit=10):
-    
     def get_stopwords():
         return set(stopwords.words('english'))
 
@@ -50,8 +49,10 @@ def generate_questions_with_answers(paragraph, limit=10):
 
         for keyword in keyword_sentences.keys():
             keyword_sentences[keyword] = sorted(keyword_sentences[keyword], key=len, reverse=True)
+        filtered_dict = {key: value for key, value in keyword_sentences.items() if value}
 
-        return keyword_sentences
+        return filtered_dict
+
 
     def get_word_sense(sentence, word):
         word = word.lower()
@@ -59,13 +60,11 @@ def generate_questions_with_answers(paragraph, limit=10):
             word = word.replace(" ", "_")
         synsets = wn.synsets(word, 'n')
         if synsets:
-            wup = max_similarity(sentence, word, 'wup', pos='n')
-            adapted_lesk_output = adapted_lesk(sentence, word, pos='n')
-            lowest_index = min(synsets.index(wup), synsets.index(adapted_lesk_output))
-            return synsets[lowest_index]
+            # Modify this section to use the desired word sense disambiguation method
+            word_sense = synsets[0]  # Defaulting to the first synset
+            return word_sense
         else:
             return None
-
     def get_wordnet_distractors(syn, word):
         distractors = []
         word = word.lower()
@@ -123,10 +122,8 @@ def generate_questions_with_answers(paragraph, limit=10):
         try:
             for keyword in mapped_sentences:
                 word_sense = get_word_sense(mapped_sentences[keyword][0], keyword)
-
                 if word_sense:
                     distractors = get_wordnet_distractors(word_sense, keyword)
-
                     if len(distractors) == 0:
                         distractors = get_conceptnet_distractors(keyword)
 
@@ -142,9 +139,10 @@ def generate_questions_with_answers(paragraph, limit=10):
                             'answer': keyword.capitalize(),
                             'distractors': distractors
                         }
+            
         except:
             pass
-        
+
         questions = []
         iterator = 1
 
@@ -176,4 +174,6 @@ def generate_questions_with_answers(paragraph, limit=10):
         return questions[:limit]
 
     return generate_questions_limit(paragraph, limit)
+
+
 

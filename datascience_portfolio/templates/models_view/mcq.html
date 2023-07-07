@@ -38,12 +38,7 @@
      
           </div>
 
-          {% comment %} <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-          {% endcomment %}
-
-       
+    
          <div class="card mb-4 border-color ">
             <form name="form1" onsubmit="return Spinner()" action="{% url 'mcq' %}", method="POST">
                 {% csrf_token %}
@@ -178,7 +173,7 @@
     $(".mcq_form_submit").prop('disabled',true);
 
     flag = true
-    showResult()
+    $('#result_div').removeClass('d-none')
 
    }
     return flag

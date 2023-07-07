@@ -133,7 +133,7 @@
       if(allowedExtension.indexOf(type)>-1)
       {
          $("#image_error").hide();
-         $("#submit-button").prop('disabled',false);
+         $("#submit-button").removeClass('d-none');
          $("#output").show()
          $("#error_div").hide();
    
@@ -141,7 +141,7 @@
    
       }else{
          $("#image_error").show();
-         $("#submit-button").prop('disabled',true);
+         $("#submit-button").addClass('d-none');
          $("#output").hide()
          $("#error_div").hide();
    

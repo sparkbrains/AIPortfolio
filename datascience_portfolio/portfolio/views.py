@@ -125,6 +125,7 @@ class Paraphrasing(View):
     def post(self, request, *args, **kwargs):
         senetence = request.POST.get('user_input') 
         resulted_sentence=get_paraphrased_sentences(senetence)
+        
         return render(request,'models_view/paraphrasing.html',{"resulted_sentence":resulted_sentence,"raw_text":senetence})
 
 

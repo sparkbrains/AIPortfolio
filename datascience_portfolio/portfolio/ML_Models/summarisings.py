@@ -5,20 +5,20 @@ from nltk.stem import PorterStemmer
 from django.conf import settings
 import os
 
-# Initialize NLTK modules
+# if os.path.isdir(settings.DIR_PUNKT) and os.path.isdir(settings.DIR_CORPORA):
+#     path1 = os.path.join(settings.BASE_DIR,settings.N_PATH1)
+#     path2 = os.path.join(settings.BASE_DIR,settings.N_PATH2)
+#     nltk.data.path.append(path1)
+#     nltk.data.path.append(path2)
+# else:
+#     nltk.download('punkt' , download_dir=settings.DIR_PUNKT)
+#     nltk.download('stopwords' , download_dir=settings.DIR_CORPORA)
 
-# nltk.download('punkt' )
-# nltk.download('stopwords')
+path1 = settings.N_PATH1
+path2 = settings.N_PATH2
+nltk.data.path.append(path1)
+nltk.data.path.append(path2)
 
-
-if os.path.isdir(settings.DIR_PATH):
-    path1 = settings.BASE_DIR,settings.N_PATH1
-    path2 = settings.BASE_DIR,settings.N_PATH2
-    nltk.data.path.append(path1)
-    nltk.data.path.append(path2)
-else:
-    nltk.download('punkt' , download_dir=settings.DIR_PATH)
-    nltk.download('stopwords' , download_dir=settings.DIR_PATH)
 
 
 
