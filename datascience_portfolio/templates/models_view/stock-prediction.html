@@ -62,7 +62,7 @@
                   <span id="days_input_error" style="display: none;color:red;">Days field can not be blank.</span>
                   <span id="min_size_error" style="display: none;color:red;"> Please select a file greator than 20KB.</span>
 
-                  <span id="max_size_error" style="display: none;color:red;"> Please select a file less than 1MB.</span>
+                  <span id="max_size_error" style="display: none;color:red;"> Please select a file less than 200kb.</span>
 
                </label>
                
@@ -189,13 +189,13 @@
                const fsize = fileInput.files.item(i).size;
                const file = Math.round((fsize / 1024));
                // The size of the file.
-               if (file <= 20) {
+               if (file <= 10) {
                    $("#min_size_error").show();
                    $("#max_size_error").hide();
 
                    fileSubmit.disabled = true;
  
-               } else if (file > 1024) {
+               } else if (file > 200) {
                    $("#max_size_error").show();
                    $("#min_size_error").hide();
 

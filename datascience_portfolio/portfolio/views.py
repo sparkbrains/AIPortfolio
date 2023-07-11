@@ -81,6 +81,7 @@ class ObjectClassification(View):
 
 
 
+
 class MusicGenerationn(View):
     def get(self, request, *args, **kwargs):      
         return render(request,'models_view/music-generation.html')
