@@ -1,112 +1,88 @@
 {% extends "base.html" %}
 {% load static %}
-{% block extrascript %}
-<script src="{% static 'js/custom-object-detection.js' %}"></script>
-<link href="{% static 'css/custom-object-detection.css' %}" rel="stylesheet" />
-<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
-
-{% endblock %}
 {% block content %}
-
 <div id="layoutSidenav_content">
-<main>
-   <div class="container-fluid px-4">
-      <h1 class="mt-4 heading-color">
-         Factory Related Custom Object Detection
-      </h1> 
-   
-      {% if not image %}
-      <div class="card card box-shadow  mx-auto my-5 border-color" >
-         <h5 class="card-header heading-color">Description</h5>
-         <div class="card-body card-bg">
-            <h5 class="card-title">Factory Related Custom Object Detection</h5>
-            <p class="card-text">In this project, we have custom trained our model on 1200 images for detection of safety measures on construction sites ensuring that workers are wearing the necessary safety equipment.<br><br>
-               <b><i>Input</i></b> - image of workers from construction site. <br>
-               <b><i>Output</i></b> -  detected image with SafetyHat or SafetyVest and a table of detected items.
-            </p>
-         </div>
-      </div>
-      <div class="card mb-4 card box-shadow mx-auto my-5 border-color">
-         <div class="card-body" style="background: #f9f9f9;">
-            <p class="mb-0">
-               <a href="{% static '' %}sample datasets/custom_object_detection.zip" ><button style="float:right" type="submit" class="formbtn">Sample Dataset
-               </button></a>
-            <div class="heading animated zoomInDown delay-0.5s">
-            </div>
-            <form name="form1" onsubmit="return Spinner()" autocomplete="off" action="{% url 'custom_object_detection' %}" method="POST" id="image-form" enctype="multipart/form-data" class="uploader" >
-               {% csrf_token %}
-               <input id="file-upload" type="file"  onchange="DisplayImage(event);ImageFormatValidate();"  name="upload_image" accept="image/png, image/JPG, image/jpeg">
-               <label for="file-upload" id="file-drag" class="animated wow zoomInUp delay-1s">
-                  <img id="file-image" src="#" alt="Preview" class="hidden">
-                  <div id="start">
-                     <i class="fa fa-download" aria-hidden="true"></i>
-                     <div>Upload only JPG and PNG image.</div>
-                     <div id="notimage" class="hidden">Please select an image</div>
-                     <span id="file-upload-btn" class="btn btn-">Select a file</span>
-                     <p><img id="output" width="200" /></p>
-                  </div>
-                  <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
-                     <span class="visually-hidden">Loading...</span>
-                  </div>
-                  <span id="error_div" style="display: none;color:red;">Please Upload the file, File cannot be empty.</span>
-                  <span id="image_error" style="display: none;color:red;">Please Upload the JPG and PNG only</span>
-                  <span id="size_error" style="display: none;color:red;">Please select a file less than 1MB.</span>
-
-               </label>
-               <button id="submit-button" onlclick="Spinner()" type="submit" class="formbtn btn-css">Submit</button>
-            </form>
-         </div>
-      </div>
-      {% endif %}
-      {% if image %}
-      <div class="row ">
-         <div class="col-sm-12">
-            <a href="{% url 'custom_object_detection' %}"><button type="submit" class="formbtn ">Upload again</button><a/>
-         </div>
-         <br><br>
-         <section id="gallery">
-            <div class="container-fluid">
-               <div class="row">
-                  <div class="col-lg-6 mb-6">
-                     <div class="card border-color" >
-                        <img src="{{image.image.url}}" alt="" class="card-img-top img-size">
-                        <div class="card-body card-bg">
-                           <h5 class="card-title ">Uploaded Image</h5>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-lg-6 mb-6">
-                     <div class="card border-color ">
-                        {% if custom_object_detection %}
-                        <img src="{% static '' %}{{custom_object_detection}}" alt="" class="card-img-top img-size">
-                        <div class="card-body border-color card-bg">
-                           <h5 class="card-title">Output </h5>
-                        </div>
-                        {% else %}
-                        <center>
-                           <br><br><br><br><br><br>
-                           <br><br><br><br><br>
-                           <h3>No Detection Found</h3>
-                           <br><br><br><br><br><br><br><br>
-                           <br><br><br>
-                        </center>
-                        <div class="card-body border-color card-bg">
-                           <h5 class="card-title">No Detection Found </h5>
-                        </div>
-                        {% endif %}
-                     </div>
-                  </div>
+   <main>
+      <div class="container-fluid px-4">
+         <h1 class="mt-4 heading-color">
+            Factory Related Custom Object Detection
+         </h1>
+         <div id="index_div">
+            <div class="card card box-shadow  mx-auto my-5 border-color" >
+               <h5 class="card-header heading-color">Description</h5>
+               <div class="card-body card-bg">
+                  <h5 class="card-title">Factory Related Custom Object Detection</h5>
+                  <p class="card-text">In this project, we have custom trained our model on 1200 images for detection of safety measures on construction sites ensuring that workers are wearing the necessary safety equipment.<br><br>
+                     <b><i>Input</i></b> - image of workers from construction site. <br>
+                     <b><i>Output</i></b> -  detected image with SafetyHat or SafetyVest and a table of detected items.
+                  </p>
                </div>
             </div>
-         </section>
-         {% endif %}
+            <div class="card mb-4 card box-shadow mx-auto my-5 border-color" >
+               <div class="card-body" style="background: #f9f9f9;">
+                  <p class="mb-0">
+                     <a href="{% static '' %}sample datasets/custom_object_detection.zip" ><button style="float:right" type="submit" class="formbtn">Sample Dataset
+                     </button></a>
+                  <div class="heading animated zoomInDown delay-0.5s">
+                  </div>
+                  <form id="file_upload_form" name="upload_form" autocomplete="off"  method="POST" id="image-form" enctype="multipart/form-data" class="uploader" >
+                     {% csrf_token %}
+                     <input id="file-upload" type="file"  onchange="DisplayImage(event);ImageFormatValidate();size_validation();" name="upload_image" accept="image/png, image/JPG, image/jpeg">
+                     <label for="file-upload" id="file-drag" class="animated wow zoomInUp delay-1s">
+                        <img id="file-image" src="#" alt="Preview" class="hidden">
+                        <div id="start">
+                           <i class="fa fa-download" aria-hidden="true"></i>
+                           <div>Upload only JPG and PNG image.</div>
+                           <div id="notimage" class="hidden">Please select an image</div>
+                           <span id="file-upload-btn" class="btn btn-">Select a file</span>
+                           <p><img id="output" width="200" /></p>
+                        </div>
+                        <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
+                           <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <span id="error_div" style="display: none;color:red;">Please Upload the file, File cannot be empty.</span>
+                        <span id="image_error" style="display: none;color:red;">Please Upload the JPG and PNG only</span>
+                        <span id="size_error" style="display: none;color:red;">Please select a file less than 1MB.</span>
+                     </label>
+                     <button id="submit-button" type="button" class="formbtn btn-css file_upload_form_submit">Submit</button>
+                  </form>
+               </div>
+            </div>
+         </div>
+         <div id="response_div">
+         </div>
       </div>
-</main>
+   </main>
 </div>
-<script> 
-   function Spinner()
+<script>
+   $(document).ready(function() {
+       $('.file_upload_form_submit').click(function(e) {
+           e.preventDefault();
+           var form = $('#file_upload_form')[0];
+           var data = new FormData(form);
+          Spinner()
+           $.ajax({
+               type: 'POST',
+               url: window.location.pathname,
+               data: data,
+               processData: false,
+               contentType: false,
+               csrfmiddlewaretoken: '{{ csrf_token }}',
+               success: function(response) {
+                  $('#response_div').html(response)
+                  $('#index_div').addClass('d-none')
+                  $("div").removeClass("overlay");
+               },
+               error: function(xhr, status, error) {
+                   console.log(xhr.responseText);
+               }
+           });
+       });
+   });
+
+function Spinner()
    {
-   var empt = document.forms["form1"]["upload_image"].value;
+   var empt = document.forms["file_upload_form"]["upload_image"].value;
    if (empt == "")
    {
    $("#error_div").show();
@@ -125,40 +101,47 @@
    }
    }
    
-</script>  
+</script> 
 <script>
    function ImageFormatValidate(){
       let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png'];
       let type = document.getElementById('file-upload').files[0].type;
+   
       if(allowedExtension.indexOf(type)>-1)
       {
          $("#image_error").hide();
-         $("#submit-button").prop('disabled',false);
-         $("#output").show()
          $("#error_div").hide();
+   
+         $("#output").show()
+         $("#submit-button").removeClass('d-none');
+   
+   
       }else{
          $("#image_error").show();
-         $("#submit-button").prop('disabled',true);
-         $("#output").hide()
+         $("#submit-button").addClass('d-none');
+         $("#error_div").hide();
+   
+         $("#output").hide() 
            }
-           
+       
+   
       }          
-      
+   
+   function size_validation(){
       let fileInput = document.getElementById("file-upload");
       let fileSubmit = document.getElementById("submit-button");
-      fileInput.addEventListener("change", function () {
          if (fileInput.files.length > 0) {
            const fileSize = fileInput.files.item(0).size;
            const fileMb = fileSize / 1024 ** 2;
            if (fileMb > 1) {
              $("#size_error").show();
-
              fileSubmit.disabled = true;
            } else {
             $("#size_error").hide();
              fileSubmit.disabled = false;
+   
            }
          }
-       });
-</script>
+      }
+</script> 
 {% endblock %}

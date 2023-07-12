@@ -10,8 +10,7 @@
             Semantic Segmentation
          </h1>
        
-         {% if  not image_paths %}
-
+         <div id="index_div">
          <div class="card card box-shadow  mx-auto my-5 border-color" >
             <h5 class="card-header heading-color">Description</h5>
             <div class="card-body card-bg">
@@ -33,9 +32,9 @@
             <div class="heading animated zoomInDown delay-0.5s">
               
             </div>
-            <form name="form1" onsubmit="return Spinner()" autocomplete="off" action="{% url 'semantic_segmentation' %}" method="POST" id="image-form" enctype="multipart/form-data" class="uploader" >
+            <form id="file_upload_form" name="file_upload_form"  autocomplete="off"  class="uploader" >
                {% csrf_token %}
-               <input id="file-upload" type="file"  onchange="DisplayImage(event);ImageFormatValidate();"  name="upload_image" accept="image/png, image/JPG, image/jpeg">
+               <input id="file-upload" type="file"  onchange="DisplayImage(event);ImageFormatValidate();size_validation();"  name="upload_image" accept="image/png, image/JPG, image/jpeg">
                <label for="file-upload" id="file-drag" class="animated wow zoomInUp delay-1s">
                   <img id="file-image" src="#" alt="Preview" class="hidden">
                   <div id="start">
@@ -55,71 +54,51 @@
 
                </label>
                
-               <button id="submit-button" onlclick="Spinner()" type="submit" class="formbtn btn-css">Submit</button>
+               <button id="submit-button"  type="button" class="formbtn btn-css file_upload_form_submit">Submit</button>
             </form>
             
          </div>
       </div>
+   </div>
 
-      {% endif %}
+      <div id="response_div">
+      </div>
 
-
-      {% if image_paths %}
-
-      <div class="row ">
-         <div class="col-sm-12">
-            <a href="{% url 'semantic_segmentation' %}"><button type="submit" class="formbtn ">Upload again</button><a/>
-         </div>
-         <br><br>
-         
-       <section id="gallery">
-         <div class="container-fluid">
-           <div class="row">
-           <div class="col-lg-6 mb-6">
-           <div class="card border-color" >
-             <img src="{{image_path.image.url}}" alt="" class="card-img-top img-size">
-             <div class="card-body card-bg">
-               <h5 class="card-title ">Uploaded Image</h5>
-             
-             </div>
-            </div>
-           </div>
-        
-           <div class="col-lg-6 mb-6">
-           <div class="card border-color">
-            {% if image_paths %}
-             <img src="{% static '' %}{{image_paths}}" alt="" class="card-img-top img-size">
-             <div class="card-body border-color card-bg">
-             <h5 class="card-title ">Output</h5>
-            </div>
-
-             {% else %}
-             <center>
-               <br><br><br><br><br><br>
-               <br><br><br><br><br>
-                <h3>No Detection Found</h3>
-                <br><br><br><br><br><br><br><br>
-                <br><br><br>
-             </center>
-             <div class="card-body border-color card-bg">
-
-             <h5 class="card-title">No Detection Found </h5>
-            </div>
-
-             {% endif %}
-          
-
-            </div>
-           </div>
-         </div>
-       </div>
-       </section>
-
-       {% endif %}
 
 
    </main>
 </div>
+
+
+<script>
+   $(document).ready(function() {
+       $('.file_upload_form_submit').click(function(e) {
+           e.preventDefault();
+           var form = $('#file_upload_form')[0];
+           var data = new FormData(form);
+          Spinner()
+           $.ajax({
+               type: 'POST',
+               csrfmiddlewaretoken: '{{ csrf_token }}',
+               url: window.location.pathname,
+               data: data,
+               processData: false,
+               contentType: false,
+               success: function(response) {
+                  $('#response_div').html(response)
+                  $('#index_div').addClass('d-none')
+                  $("div").removeClass("overlay");
+
+                  
+               },
+               error: function(xhr, status, error) {
+                   console.log(xhr.responseText);
+               }
+           });
+       });
+   });
+   </script>
+
 
 
 
@@ -127,7 +106,7 @@
   <script> 
    function Spinner()
    {
-   var empt = document.forms["form1"]["upload_image"].value;
+   var empt = document.forms["file_upload_form"]["upload_image"].value;
    if (empt == "")
    {
    $("#error_div").show();
@@ -155,7 +134,7 @@
       if(allowedExtension.indexOf(type)>-1)
       {
          $("#image_error").hide();
-         $("#submit-button").prop('disabled',false);
+         $("#submit-button").removeClass('d-none');
          $("#output").show()
          $("#error_div").hide();
 
@@ -163,29 +142,30 @@
 
       }else{
          $("#image_error").show();
-         $("#submit-button").prop('disabled',true);
+         $("#submit-button").addclass('d-none');
          $("#output").hide()
            }
            
       }          
       
 
+ 
+      function size_validation(){
       let fileInput = document.getElementById("file-upload");
       let fileSubmit = document.getElementById("submit-button");
-      fileInput.addEventListener("change", function () {
          if (fileInput.files.length > 0) {
            const fileSize = fileInput.files.item(0).size;
            const fileMb = fileSize / 1024 ** 2;
            if (fileMb > 1) {
              $("#size_error").show();
-
              fileSubmit.disabled = true;
            } else {
             $("#size_error").hide();
              fileSubmit.disabled = false;
+
            }
          }
-       });
+      }
 
    </script>
   

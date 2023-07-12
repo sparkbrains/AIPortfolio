@@ -1,0 +1,158 @@
+{% load static %}
+
+<div class="container-fluid">
+    <div class="jumbotron">
+       <h3>The big knowledge test!</h3>
+       <p>All questions are required.</p>
+    </div>
+    {% if questions %}
+    <form id="mcq_form" >
+    <input type="text" value="{{count}}" id="q_count" hidden>
+    {% for question in questions %}
+    <div class="card border-info mb-4 " >
+       <div class="d-flex justify-content-between align-items-center card-header text-white" id="h1" style="background:#157347;">
+          <span >Question {{question.number}} </span>
+       </div>
+       <div id="q1" class="collapse show" aria-labelledby="h1">
+          <div class="card-body">
+             <p >{{ question.questions}}</p>
+             {% for option in question.options.all %}
+             <div class="form-check">
+                <input class="form-check-input radio_val" value="{{option.options}}" type="radio" name="{{question.id}}">
+                <label class="form-check-label" for="q1_r1">
+                {{option.options}}
+                </label>
+             </div>
+             {% endfor %}
+             <span  style="color:red;" id="span{{question.id}}" class="d-none "> This answer was wrong. </span>
+             <span  style="color:red;" id="empty_error{{question.id}}" class="d-none "> Please select atleast one option. </span>
+          </div>
+       </div>
+    </div>
+    {% endfor %}
+    <button type="button"  class="btn btn-success mcq_form_submit">Submit</button>
+    <a href="{% url 'mcq' %}"><button type="button"  class="btn btn-success try_again d-none">Try Again</button></a>
+    <form>
+      {% else %}
+
+      <div id="q1" class="collapse show" aria-labelledby="h1">
+         <div class="card-body">
+            <div class="form-check">
+               <label class="form-check-label" for="q1_r1">
+               <h2>Please enter the meaningfull content</h2>
+               </label>
+            </div>
+            <span  style="color:red;" id="span{{question.id}}" class="d-none "> This answer was wrong. </span>
+            <span  style="color:red;" id="empty_error{{question.id}}" class="d-none "> Please select atleast one option. </span>
+         </div>
+      </div>
+      {% endif %}
+    <br><br>
+    <div id="result_div" class="d-none">
+       <h3>Answer Hints</h3>
+       <div class="card">
+          <div class="card-body">
+             <div class="card-body">
+                {% for question in questions %}
+                <p class="card-text">Question:{{question.number}} - {{question.correct_answer}}</p>
+                {% endfor %}
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+
+ <script>
+
+  function validateEmptyFields(){
+
+   count = parseInt($('#q_count').val())
+   flag = false;
+
+   var names = []
+   $('input:radio').each(function () {
+       var rname = $(this).attr('name');
+       if ($.inArray(rname, names) === -1) names.push(rname);
+   });
+
+
+   var increment_count = 0;
+
+   $.each(names, function (i, name) {
+       if ($('input[name="' + name + '"]:checked').length === 0) {
+         $('#mcq_form').find("#empty_error"+ name).removeClass('d-none')
+           console.log('Please check ' + name);
+       }
+       else {
+         $('#mcq_form').find("#empty_error"+ name).addClass('d-none')
+         increment_count = increment_count+1
+         
+       }
+   });
+
+ 
+  if(increment_count==count){
+   $(".mcq_form_submit").prop('disabled',true);
+
+   flag = true
+   $('#result_div').removeClass('d-none')
+
+  }
+   return flag
+ }
+
+ </script>
+
+<script>
+
+
+
+
+ $('.mcq_form_submit').click(function () {
+   
+
+   var mcq_array = new Array();
+   
+   let return_type = validateEmptyFields()
+   if(return_type == true){
+
+
+   $("#mcq_form input[type=radio]:checked").each(function() {
+     if(this.checked == true)
+     {
+       $(".try_again").removeClass('d-none');
+       mcq_array.push({
+         question_id: this.name,
+         answer: this.value
+       });
+     }
+   });
+
+   let url = '{% url "mcq_submit" %}'
+   $.ajax({
+     type: "POST",
+     url: url,
+     data: {
+         mcq_array: JSON.stringify(mcq_array),
+         request_type: "ajax_request",
+         csrfmiddlewaretoken: '{{ csrf_token }}',
+
+     },
+     success: function (data) {
+
+    let  aa = $.parseJSON(data)
+
+       $.each(aa, function(key, value) {
+         $('#mcq_form').find("#span"+ value[0]).removeClass('d-none')
+   });
+
+         
+
+     }
+
+ });
+
+}
+})
+
+ </script>

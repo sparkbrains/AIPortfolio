@@ -1,0 +1,50 @@
+{% load static %}
+
+<div class="col-sm-12">
+   <a href="{% url 'summarising' %}"><button type="submit" class="formbtn ">Input Again</button><a/>
+</div>
+<br><br>
+<section id="gallery">
+   <div class="container-fluid">
+      <div class="row">
+         <div class="col-lg-6 mb-6">
+            <div class="card border-color ">
+           
+
+               <div class="card-body">{{raw_text}}</canvas></div>
+               <div class="card-body card-body card-bg">
+                  <h5 class="card-title">Raw Text | Length : {{raw_text_length}} </h5>
+                  </h5>
+
+
+                  <p class="card-text"></p>
+               </div>
+            </div>
+         </div>
+         {% if summary %}
+         <div class="col-lg-6 mb-6">
+            <div class="card border-color ">
+               <div class="card-body"><span id="resulted_summary">{{summary}}</span></canvas></div>
+               <div class="card-body card-body card-bg">
+                  <h5 class="card-title">Summary | Length : {{summary_len}} </h5>
+                  <p class="card-text"></p>
+               </div>
+            </div>
+         </div>
+         {% else %}
+         <div class="col-lg-6 mb-6">
+            <div class="card border-color ">
+               <div class="card-body"><span id="resulted_summary"><h2>Please enter meaningfull content.</h2></span></canvas></div>
+               <div class="card-body card-body card-bg">
+                  <h5 class="card-title">Summary | Length : 0 </h5>
+                  <p class="card-text"></p>
+               </div>
+            </div>
+         </div>
+         {% endif %}
+      </div>
+   </div>
+</div>
+</div>
+</section>
+

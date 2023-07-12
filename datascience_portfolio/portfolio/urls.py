@@ -1,6 +1,7 @@
 
 from django.urls import path
-from .views import CustomObjectDetection,Summarising,SemanticSegmentation,ObjectClassification,MusicGenerationn,StockPredictions,Paraphrasing,ChatGPT,MCQ
+from .views import CustomObjectDetection,Summarising,SemanticSegmentation,ObjectClassification,MusicGenerationn,StockPredictions,Paraphrasing,ChatGPT,MCQ,MCQSubmit
+# from .views import CustomObjectDetection,ObjectClassification
 
 
 urlpatterns = [
@@ -13,5 +14,7 @@ urlpatterns = [
     path('paraphrasing/', Paraphrasing.as_view(), name='paraphrasing'),
     path('chat-gpt/', ChatGPT.as_view(), name='chat_gpt'),
     path('mcq/', MCQ.as_view(), name='mcq'),
+    path('mcq_submit/', MCQSubmit.as_view(), name='mcq_submit'),
+
 
 ]

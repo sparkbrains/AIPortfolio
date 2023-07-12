@@ -1,0 +1,86 @@
+{% load static %}
+{% block extra_js %}
+<script src="{% static 'js/datatables-simple-demo.js' %}"></script> 
+
+{% endblock %}
+<div class="col-sm-12">
+    <a href="{% url 'stock_prediction' %}"><button type="submit" class="formbtn ">Upload again</button><a/>
+ </div>
+ <br><br>
+ <div class="row">
+    <div class="col-lg-6">
+       <div class="card-header border-color card-title" style="background: #337e50;">
+          <i class="fas fa-table me-1 " ></i>
+          Predicted Data
+       </div>
+       <div class="card-body border-color">
+           {% comment %} <table id="datatfile_upload_formablesSimple" class="border-color">
+             <thead>
+                <tr>
+                   <th>Predicted Data</th>
+                   <th>Time</th>
+                </tr>
+             </thead>
+             <tfoot>
+                <tr>
+                   <th>Predicted Data</th>
+                   <th>Time</th>
+                </tr>
+             </tfoot>
+             
+             <tbody class="border-color">
+                {% for result in predicted_result %}
+                <tr>
+                   <td class="border-color">{{result.1}}</td>
+                   <td class="border-color">{{result.0|safe}}</td>
+                </tr>
+                {% endfor %} 
+             </tbody>
+          </table>  {% endcomment %}
+
+
+            <table id="datatablesSimple" class="table table-striped border-color " style="width:100%">
+               <thead>
+                  <tr>
+                     <th>Predicted Data</th>
+                     <th>Time</th>
+                  
+                  </tr>
+               </thead>
+               <tbody class="border-color">
+                  {% for result in predicted_result %}
+
+                  <tr>
+                     <td class="border-color">{{result.1}}</td>
+                     <td class="border-color">{{result.0|safe}}</td>
+                     
+                  </tr>
+                  {% endfor %} 
+
+               </tbody>
+               <tfoot>
+                  <tr>
+                     <th>Predicted Data</th>
+                     <th>Time</th>
+                  
+                  </tr>
+               </tfoot>
+         </table>
+       </div>
+    </div>
+    <div class="col-lg-6">
+       <div class="card-header border-color card-title"  style="background: #337e50;" >
+          <i class="fas fa-chart-pie me-1"></i>
+          Predicted Figure  
+       </div>
+       <div class="card-body border-color">
+          {% if not predicted_result is none %}
+          <img src="{% static 'stock_prediction/' %}{{resulted_image}}"  id="preview" class="img-thumbnail" style="height: 72%;width: 100%;">
+          {% else %}
+          <center>
+             <h1>Please upload the correct file.</h1>
+          </center>
+          {% endif %}
+       </div>
+    </div>
+

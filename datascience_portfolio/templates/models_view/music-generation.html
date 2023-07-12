@@ -3,102 +3,90 @@
 {% block extra_js %}
 <script src="{% static 'js/music-generator.js' %}"></script>
 {% endblock %}
-{% block extrascript %}
-{% endblock %}
 {% block content %}    
-
-
 <div id="layoutSidenav_content">
-<main>
-   <div class="container-fluid px-4">
-      <h1 class="mt-4 heading-color">
-         Music Generation
-      </h1>
-   
-      {% if not music %}
-      <div class="card card box-shadow  mx-auto my-5 border-color" >
-         <h5 class="card-header heading-color">Description</h5>
-         <div class="card-body card-bg">
-            <h5 class="card-title">Music Generation</h5>
-            <p class="card-text">In a music generation project, our aim is to modify the tune of user music. This involves utilising deep learning techniques to generate music by changing the dynamic tempo, duration, and music instruments. 
-               <br><br>
-               <b><i>Input</i></b> - Midi file.
-               <br>
-               <b><i>Output</i></b> - Midi file with changing tune.
-            </p>
-         </div>
-      </div>
-      <div class="card mb-4 border-color">
-         <div class="card-body" style="background: #f9f9f9;">
-            <p class="mb-0">
-               <a href="{% static '' %}sample datasets/music_generator.zip" ><button style="float:right" type="submit" class="formbtn">Sample Dataset
-               </button></a>
-            <form  name="form1"  onsubmit="return Spinner()" action="{% url 'music_generation' %}" method="POST" id="image-form" enctype="multipart/form-data" class="uploader">
-               {% csrf_token %}
-               <input id="file-upload" onchange="ImageFormatValidate()" type="file"  name="mid_music" accept=".MID" / >
-               <label for="file-upload" id="file-drag" class="anim   ated wow zoomInUp delay-1s">
-                  <img id="file-image" src="#" alt="Preview" class="hidden">
-                  <div id="start">
-                     <i class="fa fa-download" aria-hidden="true"></i>
-                     <div>Upload MID File only</div>
-                     <div id="notimage" class="hidden">Please select an image</div>
-                     <span id="file-upload-btn" class="btn btn-">Select a file</span>
-                     <p id ="file_name" ></p>
-                  </div>
-                  <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
-                     <span class="visually-hidden">Loading...</span>
-                  </div>
-                  <span id="error_div" style="display: none;color:red;"> Please Upload the MID file, File cannot be empty.</span>
-                  <span id="min_size_error" style="display: none;color:red;"> Please select a file greator than 4KB.</span>
-
-                  <span id="max_size_error" style="display: none;color:red;"> Please select a file less than 1MB.</span>
-                  <p id="invalid_file" style="color:red">{{invalid_file}}</p>
-               </label>
-               <button  id="submit-button" type="submit" class="formbtn btn-css">Submit</button>
-            </form>
-         </div>
-      </div>
-      <br><br>
-      {% endif %}
-      {% if music %}
-      <div class="row ">
-         <div class="col-sm-12">
-            <a href="{% url 'music_generation' %}"><button type="submit" class="formbtn ">Upload again</button><a/>
-         </div>
-         <br><br>
-         <section id="gallery">
-            <div class="container-fluid">
-               <div class="row">
-                  <div class="col-lg-6 mb-6">
-                     <div class="card border-color" style="background: #f9f9f9;" >
-                        <midi-player
-                           src="{{original_sound.music.url}}"
-                           sound-font visualizer="#myVisualizer">
-                        </midi-player>
-                        <div class="card-body card-bg">
-                           <h5 class="card-title ">Original Music</h5>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-lg-6 mb-6">
-                     <div class="card border-color" style="background: #f9f9f9;">
-                        <midi-player
-                           src="{% static '' %}{{music}}"
-                           sound-font visualizer="#myVisualizer">
-                        </midi-player>
-                        <div class="card-body card-bg">
-                           <h5 class="card-title ">Generated Music</h5>
-                        </div>
-                     </div>
-                  </div>
+   <main>
+      <div class="container-fluid px-4">
+         <h1 class="mt-4 heading-color">
+            Music Generation
+         </h1>
+         <div id="index_div">
+            <div class="card card box-shadow  mx-auto my-5 border-color" >
+               <h5 class="card-header heading-color">Description</h5>
+               <div class="card-body card-bg">
+                  <h5 class="card-title">Music Generation</h5>
+                  <p class="card-text">In a music generation project, our aim is to modify the tune of user music. This involves utilising deep learning techniques to generate music by changing the dynamic tempo, duration, and music instruments. 
+                     <br><br>
+                     <b><i>Input</i></b> - Midi file.
+                     <br>
+                     <b><i>Output</i></b> - Midi file with changing tune.
+                  </p>
                </div>
             </div>
-         </section>
-         {% endif %}
+            <div class="card mb-4 border-color">
+               <div class="card-body" style="background: #f9f9f9;">
+                  <p class="mb-0">
+                     <a href="{% static '' %}sample datasets/music_generator.zip" ><button style="float:right" type="submit" class="formbtn">Sample Dataset
+                     </button></a>
+                  <form  id="file_upload_form" name="form1"  method="POST"  enctype="multipart/form-data" class="uploader">
+                     {% csrf_token %}
+                     <input id="file-upload" onchange="ImageFormatValidate()" type="file"  name="mid_music" accept=".MID" / >
+                     <label for="file-upload" id="file-drag" class="anim   ated wow zoomInUp delay-1s">
+                        <img id="file-image" src="#" alt="Preview" class="hidden">
+                        <div id="start">
+                           <i class="fa fa-download" aria-hidden="true"></i>
+                           <div>Upload MID File only</div>
+                           <div id="notimage" class="hidden">Please select an image</div>
+                           <span id="file-upload-btn" class="btn btn-">Select a file</span>
+                           <p id ="file_name" ></p>
+                        </div>
+                        <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
+                           <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <span id="error_div" style="display: none;color:red;"> Please Upload the MID file, File cannot be empty.</span>
+                        <span id="min_size_error" style="display: none;color:red;"> Please select a file greator than 4KB.</span>
+                        <span id="max_size_error" style="display: none;color:red;"> Please select a file less than 1MB.</span>
+                        <p id="invalid_file" style="color:red">{{invalid_file}}</p>
+                     </label>
+                     <button  id="submit-button"  type="button" class="formbtn btn-css file_upload_form_submit">Submit</button>
+                  </form>
+               </div>
+            </div>
+         </div>
+         <br><br>
       </div>
-</main>
+      <div id="response_div">
+      </div>
+   </main>
+  
 </div>
-<script> 
+
+<script>
+   $(document).ready(function() {
+       $('.file_upload_form_submit').click(function(e) {
+           e.preventDefault();
+           var form = $('#file_upload_form')[0];
+           var data = new FormData(form);
+          Spinner()
+           $.ajax({
+               type: 'POST',
+               url: window.location.pathname,
+               data: data,
+               processData: false,
+               contentType: false,
+               csrfmiddlewaretoken: '{{ csrf_token }}',
+               success: function(response) {
+                  $('#response_div').html(response)
+                  $('#index_div').addClass('d-none')
+                  $("div").removeClass("overlay");
+               },
+               error: function(xhr, status, error) {
+                   console.log(xhr.responseText);
+               }
+           });
+       });
+   });
+
    function Spinner()
    {
    var empt = document.forms["form1"]["mid_music"].value;
@@ -110,9 +98,9 @@
    }
    else 
    {
-   $("#spinner_div").show();
+   $("#spinner_div").show(); 
    $("#error_div").hide();
-
+   
    var div= document.createElement("div");
       div.className += "overlay";
       document.body.appendChild(div);
@@ -120,8 +108,6 @@
    }
    }
    
-</script>  
-<script>
    function ImageFormatValidate(){
      var fileInput = document.getElementById('file-upload');
      var filePath = fileInput.value;
@@ -136,7 +122,7 @@
      }else{
         $("#image_error").hide();
         $("#invalid_file").addClass('d-none');
-
+   
      $("#submit-button").prop('disabled',false);
      $("#error_div").hide();
    
@@ -149,40 +135,38 @@
    $('#file_name').text(file)
    });
    
-
+   
    let fileInput = document.getElementById("file-upload");
    let fileSubmit = document.getElementById("submit-button");
-
+   
    fileInput.addEventListener("change", function () {
-
+   
     if (fileInput.files.length > 0) {
       // Check if any file is selected.
-          for (const i = 0; i <= fileInput.files.length - 1; i++) {
+          for (var i = 0; i <= fileInput.files.length - 1; i++) {
    
               const fsize = fileInput.files.item(i).size;
               const file = Math.round((fsize / 1024));
               // The size of the file.
-              {% comment %} if (file <= 5) {
+              if (file <= 5) {
                   $("#min_size_error").show();
                   fileSubmit.disabled = true;
-
-              }{% endcomment %}
+   
+              }
               if (file > 1024) { 
                   $("#max_size_error").show();
                   fileSubmit.disabled = true;
-
+   
               } else {
                $("#min_size_error").hide();
                $("#max_size_error").hide();
-
+   
                fileSubmit.disabled = false;
-
-
+   
+   
               } 
           }
          }
       });
 </script>
-
-   
 {% endblock %}

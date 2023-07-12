@@ -1,0 +1,50 @@
+
+{% load static %}
+<div class="row ">
+    <div class="col-sm-12">
+       <a href="{% url 'semantic_segmentation' %}"><button type="submit" class="formbtn ">Upload again</button><a/>
+    </div>
+    <br><br>
+    
+  <section id="gallery">
+    <div class="container-fluid">
+      <div class="row">
+      <div class="col-lg-6 mb-6">
+      <div class="card border-color" >
+        <img src="{{image_path.image.url}}" alt="" class="card-img-top img-size">
+        <div class="card-body card-bg">
+          <h5 class="card-title ">Uploaded Image</h5>
+        
+        </div>
+       </div>
+      </div>
+   
+      <div class="col-lg-6 mb-6">
+      <div class="card border-color">
+       {% if image_paths %}
+        <img src="{% static '' %}{{image_paths}}" alt="" class="card-img-top img-size">
+        <div class="card-body border-color card-bg">
+        <h5 class="card-title ">Output</h5>
+       </div>
+
+        {% else %}
+        <center>
+          <br><br><br><br><br><br>
+          <br><br><br><br><br>
+           <h3>No Detection Found</h3>
+           <br><br><br><br><br><br><br><br>
+           <br><br><br>
+        </center>
+        <div class="card-body border-color card-bg">
+
+        <h5 class="card-title">No Detection Found </h5>
+       </div>
+
+        {% endif %}
+     
+
+       </div>
+      </div>
+    </div>
+  </div>
+  </section>
