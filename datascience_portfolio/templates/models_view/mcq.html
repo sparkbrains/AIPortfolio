@@ -1,11 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
-
 <script type="module">
-    import Autogrow from "https://cdn.jsdelivr.net/npm/vanilla-autogrow@1.0.0/autogrow.min.js";
-    var inst = new Autogrow();
-  </script>
+   import Autogrow from "https://cdn.jsdelivr.net/npm/vanilla-autogrow@1.0.0/autogrow.min.js";
+   var inst = new Autogrow();
+</script>
 {% block content %}
 <div id="layoutSidenav_content">
    <main>
@@ -13,229 +12,118 @@
          <h1 class="mt-4 heading-color">
             MCQ
          </h1>
-      
-         {% if  not questions %}
-
-         <div class="card card box-shadow  mx-auto my-5 border-color" >
-            <h5 class="card-header heading-color">Description</h5>
-            <div class="card-body card-bg">
-               <h5 class="card-title">MCQ</h5>
-               <p class="card-text">This project generates multiple-choice questions based on a given paragraph. It aims to automate the process of generating questions and answer options. 
-                <br><br>
-                  <b><i>Input</i></b> - The input in generate_questions_with_answers function is a paragraph of text.  <br>
-                  <b><i>Output</i></b> -The output of function is a list of multiple-choice questions in the form of a Python dictionary.<br><br>
+         <div id="index_div">
+            <div class="card card box-shadow  mx-auto my-5 border-color" >
+               <h5 class="card-header heading-color">Description</h5>
+               <div class="card-body card-bg">
+                  <h5 class="card-title">MCQ</h5>
+                  <p class="card-text">This project generates multiple-choice questions based on a given paragraph. It aims to automate the process of generating questions and answer options. 
+                     <br><br>
+                     <b><i>Input</i></b> - The input in generate_questions_with_answers function is a paragraph of text.  <br>
+                     <b><i>Output</i></b> -The output of function is a list of multiple-choice questions in the form of a Python dictionary.<br><br>
                   </p>
+               </div>
             </div>
-         </div>
-         <div class="card card box-shadow  mx-auto my-5 border-color" >
-          <h5 class="card-header heading-color">Sample paragraph</h5>
-          <div class="card-body card-bg">
-             <p class="card-text">This project generates multiple-choice questions based on a given paragraph. It aims to automate the process of generating questions and answer options. 
-              The Industrial Revolution was a period of significant change and innovation that occurred in the late 18th century and continued into the 19th century. It marked a transition from handmade production methods to machine-based manufacturing processes. One of the key inventions of this era was the steam engine, which revolutionized transportation and industry. The steam engine enabled the development of steam-powered locomotives and steamships, allowing goods and people to be transported more quickly and efficiently. Additionally, the invention of the spinning jenny and the power loom mechanized textile production, leading to the growth of the textile industry. These advancements in technology and industry had profound social and economic impacts, transforming society and leading to the rise of urbanization and the formation of a capitalist economy.
-                </p>
-          </div>
-       </div>
-     
-          </div>
-
-    
+            <div class="card card box-shadow  mx-auto my-5 border-color" >
+               <h5 class="card-header heading-color">Sample paragraph</h5>
+               <div class="card-body card-bg">
+                  <p class="card-text">This project generates multiple-choice questions based on a given paragraph. It aims to automate the process of generating questions and answer options. 
+                     The Industrial Revolution was a period of significant change and innovation that occurred in the late 18th century and continued into the 19th century. It marked a transition from handmade production methods to machine-based manufacturing processes. One of the key inventions of this era was the steam engine, which revolutionized transportation and industry. The steam engine enabled the development of steam-powered locomotives and steamships, allowing goods and people to be transported more quickly and efficiently. Additionally, the invention of the spinning jenny and the power loom mechanized textile production, leading to the growth of the textile industry. These advancements in technology and industry had profound social and economic impacts, transforming society and leading to the rise of urbanization and the formation of a capitalist economy.
+                  </p>
+               </div>
+            </div>
          <div class="card mb-4 border-color ">
-            <form name="form1" onsubmit="return Spinner()" action="{% url 'mcq' %}", method="POST">
-                {% csrf_token %}
-            <div class="card-body ">
-               <p class="mb-0">
-                <label for="exampleFormControlTextarea1" class="form-label">Enter the text below.
-                </label>
-                <textarea  id="user_input" name="user_input" class="form-control border-color" id="exampleFormControlTextarea1" rows="3" minlength="300" required></textarea>
-               
-                  <span id="error_div" style="display: none;color:red;">Field can not be empty.</span>
+            <form name="form1"  method="POST">
+               {% csrf_token %}
+               <div class="card-body ">
+                  <p class="mb-0">
+                     <label for="exampleFormControlTextarea1" class="form-label">Enter the text below.
+                     </label>
+                     <textarea  id="user_input" oninput="char_limit()" name="user_input" class="form-control border-color" rows="3" minlength="300" required></textarea>
+                     <span id="error_div" style="display: none;color:red;">Field can not be empty.</span>
+                     <span id="min_char_error" style="display: none;color:red;"> Please write minimum 200 characters..</span>
+
                   <p style="color:red;">{{invalid_paragraph}}</p>
-
-
                   <br>
-                  {% comment %} <button  type="submit" class="formbtn">Submit</button> {% endcomment %}
-                  <button type="submit" class="formbtn"><i class="fa fa-paper-plane " aria-hidden="true"></i> Submit
-                    <span class="spinner-border spinner-border-sm show_spinner d-none" role="status" aria-hidden="true"></span>
-                    <span class="visually-hidden show_spinner">Loading...</span>
-                    </button>
-
-            </div>
-        </form>
-
+                  <button onclick="submit_form()" id="submit-button" type="button" class="formbtn"><i class="fa fa-paper-plane " aria-hidden="true"></i> Submit
+                  <span class="spinner-border spinner-border-sm show_spinner d-none" role="status" aria-hidden="true"></span>
+                  <span class="visually-hidden show_spinner">Loading...</span>
+                  </button>
+               </div>
+            </form>
          </div>
-            {% endif %}
-          
-  {% if  questions %}
-
-<!--start-->
-      <div class="container-fluid">
-
-        <div class="jumbotron">
-          <h3>The big knowledge test!</h3>
-          <p>All questions are required.</p>
-        </div>
-        <form id="mcq_form" >
-          <input type="text" value="{{count}}" id="q_count" hidden>
-        {% for question in questions %}
-        <div class="card border-info mb-4 " >
-          <div class="d-flex justify-content-between align-items-center card-header text-white" id="h1" style="background:#157347;">
-            <span >Question {{question.number}} </span>
-          </div>
-          <div id="q1" class="collapse show" aria-labelledby="h1">
-            <div class="card-body">
-              <p >{{ question.questions}}</p>
-
-                {% for option in question.options.all %}
-
-              <div class="form-check">
-                <input class="form-check-input radio_val" value="{{option.options}}" type="radio" name="{{question.id}}">
-                <label class="form-check-label" for="q1_r1">
-                  {{option.options}}
-                </label>
-              </div>
-                {% endfor %}
-                <span  style="color:red;" id="span{{question.id}}" class="d-none "> This answer was wrong. </span>
-                <span  style="color:red;" id="empty_error{{question.id}}" class="d-none "> Please select atleast one option. </span>
-            </div>
-
-          </div>
-        </div>
-      {% endfor %}
-      <button type="button"  class="btn btn-success mcq_form_submit">Submit</button>
-      <a href="{% url 'mcq' %}"><button type="button"  class="btn btn-success try_again d-none">Try Again</button></a>
-
-      <form>
-      
-      {% endif %}
-    <br><br>
-      <div id="result_div" class="d-none">
-      <h3>Answer Hints</h3>
-      
-        <div class="card">
-          <div class="card-body">      
-            <div class="card-body">
-              {% for question in questions %}
-              <p class="card-text">Question:{{question.number}} - {{question.correct_answer}}</p>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-        
-      </div> 
-    </div>
-      <!--end -->
+      </div>
+      <div id="response_div"></div>
    </main>
 </div>
-
-
-
 <script>
-  function Spinner()
-   {
-
-   $(".show_spinner").removeClass('d-none');
+   function submit_form(){
+     var input = $('#user_input').val();
+     if (input == "")
+     {
+     $("#error_div").show();
+     $("#error_div").removeClass('d-none')
+    
+     return false;
+     }
+     Spinner()
+       $.ajax({
+               type: "POST",
+               url: window.location.pathname,
+               data: {
+                   user_input: input,
+                   csrfmiddlewaretoken: '{{ csrf_token }}',
    
-   var div= document.createElement("div");
-      div.className += "overlay";
-      document.body.appendChild(div);
-   return true; 
-   }
+               },
+               success: function (response) {
+                 
+               $('#response_div').html(response)
+               $('#index_div').addClass('d-none')
+               $("div").removeClass("overlay");
+   
+   
+               }
+               
+   
+           });
+         }
    
 
-  function validateEmptyFields(){
-
-    count = parseInt($('#q_count').val())
-    flag = false;
-
-    var names = []
-    $('input:radio').each(function () {
-        var rname = $(this).attr('name');
-        if ($.inArray(rname, names) === -1) names.push(rname);
-    });
-
-
-    var increment_count = 0;
-
-    $.each(names, function (i, name) {
-        if ($('input[name="' + name + '"]:checked').length === 0) {
-          $('#mcq_form').find("#empty_error"+ name).removeClass('d-none')
-            console.log('Please check ' + name);
-        }
-        else {
-          $('#mcq_form').find("#empty_error"+ name).addClass('d-none')
-          increment_count = increment_count+1
-          
-        }
-    });
-
-  
-   if(increment_count==count){
-    $(".mcq_form_submit").prop('disabled',true);
-
-    flag = true
-    $('#result_div').removeClass('d-none')
-
-   }
-    return flag
-  }
-
-  </script>
-
- <script>
-
-
-
-
-  $('.mcq_form_submit').click(function () {
+   function Spinner()
+    {
+   
+    $(".show_spinner").removeClass('d-none');
+    
+    var div= document.createElement("div");
+       div.className += "overlay";
+       document.body.appendChild(div);
+    return true; 
+    }
     
 
-    var mcq_array = new Array();
-    
-    let return_type = validateEmptyFields()
-    if(return_type == true){
-
-
-    $("#mcq_form input[type=radio]:checked").each(function() {
-      if(this.checked == true)
-      {
-        $(".try_again").removeClass('d-none');
-        mcq_array.push({
-          question_id: this.name,
-          answer: this.value
-        });
-      }
-    });
-
-    let url = '{% url "mcq" %}'
-    $.ajax({
-      type: "POST",
-      url: url,
-      data: {
-          mcq_array: JSON.stringify(mcq_array),
-          request_type: "ajax_request",
-          csrfmiddlewaretoken: '{{ csrf_token }}',
-
-      },
-      success: function (data) {
-
-     let  aa = $.parseJSON(data)
-
-        $.each(aa, function(key, value) {
-          $('#mcq_form').find("#span"+ value[0]).removeClass('d-none')
-    });
-
-          
-
-      }
-
-  });
-
-}
-})
+    let text = document.getElementById("user_input");
+    let fileSubmit = document.getElementById("submit-button");
+ 
+ function char_limit(){
+ 
+     if (text.value.length < 200) {   
+         $("#error_div").hide()
+ 
+          $("#min_char_error").show();
+          fileSubmit.disabled = true;
+ 
+        }
+ 
+    else{   
+     $("#error_div").hide()
+ 
+          $("#min_char_error").hide();
+          fileSubmit.disabled = false;
+ 
+        }
+        
+    }
+    </script>
 
 </script>
-
-
-
 {% endblock %}
-

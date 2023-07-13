@@ -1,142 +1,103 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-
 <div id="layoutSidenav_content">
-<main>
-   <div class="container-fluid px-4">
-      <h1 class="mt-4 heading-color">
-         Stock Prediction 
-      </h1>
-      
-{% if not resulted_image %}
-      <div class="card card box-shadow  mx-auto my-5 border-color" >
-         <h5 class="card-header heading-color">Description</h5>
-         <div class="card-body card-bg">
-            <h5 class="card-title">Stock prediction</h5>
-            <p class="card-text">In the stock prediction project, the goal is to create a function that can forecast future stock prices.<br><br>
-               <b><i>Input</i></b> - The function takes two inputs: a CSV file containing historical stock data and the number of days to predict. <br>
-               <b><i>Output</i></b> - The output of the function is a dataframe that contains the predicted stock prices for the given number of periods. This dataframe provides insights into the expected values of the stocks in the future.               </p>
-         </div>
-      </div>
-
-      
-     
-      <div class="card mb-4 card box-shadow mx-auto my-5 border-color">
-         <div class="card-body" style="background: #f9f9f9;">
-            <p class="mb-0">
-               <a href="{% static '' %}sample datasets/stock.zip" ><button style="float:right" type="submit" class="formbtn">Sample Dataset
-               </button></a>
-            <div class="heading animated zoomInDown delay-0.5s">
-              
-            </div>
-            <form name="form1" onsubmit="return Spinner()" autocomplete="off" action="{% url 'stock_prediction' %}" method="POST" id="image-form" enctype="multipart/form-data" class="uploader" >
-               {% csrf_token %}
-               <input id="file-upload" type="file"  onchange="ImageFormatValidate();"  name="csv_upload" accept=".csv"/>
-               <label for="file-upload" id="file-drag" class="animated wow zoomInUp delay-1s">
-                  <img id="file-image" src="#" alt="Preview" class="hidden">
-                  <div id="start">
-                     <i class="fa fa-download" aria-hidden="true"></i>
-                     <div>Upload CSV file only.</div>
-                     <div id="notimage" class="hidden">Please select an image</div>
-                     <span id="file-upload-btn" class="btn btn-">Select a file</span>
-                     <p><img id="output" width="200" /></p>
-                     <p id ="file_name" ></p>
-
-                  </div>
-                  <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
-                     <span class="visually-hidden">Loading...</span>
-                  </div>
-                  <div id="response" class="">
-                     <div id="messages"></div>
-                   
-                     <div class="copyURL">
-                        <div>Please enter no. of days.</div>
-
-                        <input type="text" name="days" id="days" class="formtext" placeholder="Enter days in number" onkeypress="return /[0-9]/i.test(event.key)"/>
-                     </div>
-                  </div>
-                  
-             
-                  <span id="error_div" style="display: none;color:red;">Please Upload the file, File cannot be empty.</span>
-                  <span id="days_input_error" style="display: none;color:red;">Days field can not be blank.</span>
-                  <span id="min_size_error" style="display: none;color:red;"> Please select a file greator than 20KB.</span>
-
-                  <span id="max_size_error" style="display: none;color:red;"> Please select a file less than 200kb.</span>
-
-               </label>
-               
-               <button id="submit-button" onlclick="Spinner()" type="submit" class="formbtn btn-css">Submit</button>
-            </form>
-            
-         </div>
-      </div>
-
-{% endif %}
-{% if resulted_image %}
-      <div class="col-sm-12">
-         <a href="{% url 'stock_prediction' %}"><button type="submit" class="formbtn ">Upload again</button><a/>
-      </div>
-      <br><br>
-      <div class="row">
-       
-         <div class="col-lg-6">
-               
-                  <div class="card-header border-color card-title" style="background: #337e50;">
-                     <i class="fas fa-table me-1 " ></i>
-                     Predicted Data
-                  </div>
-                  <div class="card-body border-color">
-                     <table id="datatablesSimple" class="border-color">
-                        <thead>
-                           <tr>
-                              <th>Predicted Data</th>
-                              <th>Time</th>
-                           </tr>
-                        </thead>
-                        <tfoot>
-                           <tr>
-                              <th>Predicted Data</th>
-                              <th>Time</th>
-                           </tr>
-                        </tfoot>
-                        <tbody class="border-color">
-            
-                          {% for result in predicted_result %}
-                           <tr>
-                              <td class="border-color">{{result.1}}</td>
-                              <td class="border-color">{{result.0|safe}}</td>
-                           </tr>
-                           {% endfor %} 
-                        </tbody>
-                     </table>
-            </div>
-         </div>
-         <div class="col-lg-6">
-               <div class="card-header border-color card-title"  style="background: #337e50;" >
-                  <i class="fas fa-chart-pie me-1"></i>
-                  Predicted Figure  
+   <main>
+      <div class="container-fluid px-4">
+         <h1 class="mt-4 heading-color">
+            Stock Prediction 
+         </h1>
+         <div id="index_div">
+            <div class="card card box-shadow  mx-auto my-5 border-color" >
+               <h5 class="card-header heading-color">Description</h5>
+               <div class="card-body card-bg">
+                  <h5 class="card-title">Stock prediction</h5>
+                  <p class="card-text">In the stock prediction project, the goal is to create a function that can forecast future stock prices.<br><br>
+                     <b><i>Input</i></b> - The function takes two inputs: a CSV file containing historical stock data and the number of days to predict. <br>
+                     <b><i>Output</i></b> - The output of the function is a dataframe that contains the predicted stock prices for the given number of periods. This dataframe provides insights into the expected values of the stocks in the future.               
+                  </p>
                </div>
-               <div class="card-body border-color">
-
-                  {% if not predicted_result is none %}
-                  <img src="{% static 'stock_prediction/' %}{{resulted_image}}"  id="preview" class="img-thumbnail" style="height: 72%;width: 100%;">
-                  {% else %}
-                  <center><h1>Please upload the correct file.</h1></center>
-                  {% endif %}
-               
             </div>
+            <div class="card mb-4 card box-shadow mx-auto my-5 border-color">
+               <div class="card-body" style="background: #f9f9f9;">
+                  <p class="mb-0">
+                     <a href="{% static '' %}sample datasets/stock.zip" ><button style="float:right" type="submit" class="formbtn">Sample Dataset
+                     </button></a>
+                  <div class="heading animated zoomInDown delay-0.5s">
+                  </div>
+                  <form id="file_upload_form" name="form1"  autocomplete="off" method="POST" id="image-form" enctype="multipart/form-data" class="uploader" >
+                     {% csrf_token %}
+                     <input id="file-upload" type="file"   name="csv_upload" accept=".csv"/>
+                     <label for="file-upload" id="file-drag" class="animated wow zoomInUp delay-1s">
+                        <img id="file-image" src="#" alt="Preview" class="hidden">
+                        <div id="start">
+                           <i class="fa fa-download" aria-hidden="true"></i>
+                           <div>Upload CSV file only.</div>
+                           <div id="notimage" class="hidden">Please select an image</div>
+                           <span id="file-upload-btn" class="btn btn-">Select a file</span>
+                           <p><img id="output" width="200" /></p>
+                           <p id ="file_name" ></p>
+                        </div>
+                        <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
+                           <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div id="response" class="">
+                           <div id="messages"></div>
+                           <div class="copyURL">
+                              <div>Please enter no. of days.</div>
+                              <input type="text" name="days" id="days" max="30" class="formtext" placeholder="Enter days in number" onkeypress="return /[0-9]/i.test(event.key)"/>
+                           </div>
+                        </div>
+                        <span id="error_div" style="display: none;color:red;">Please Upload the file, File cannot be empty.</span>
+                        <span id="days_input_error" style="display: none;color:red;">Days field can not be blank.</span>
+                        <span id="min_size_error" style="display: none;color:red;"> Please select a file greator than 10KB.</span>
+                        <span id="max_size_error" style="display: none;color:red;"> Please select a file less than 200KB.</span>
+                        <span id="max_days_error" style="display: none;color:red;">Please enter days less than or equal to 30.</span>
+
+                        
+                     </label>
+                     <button id="submit-button"  type="button" class="formbtn btn-css file_upload_form_submit">Submit</button>
+                  </form>
+               </div>
+            </div>
+         </div>
+         <!-- #add component  div-->
+         <div id="response_div">
+         </div>
+         <!--end -->
       </div>
-      {% endif %}
-
-
-
-      
-   </div>
-
-</main>
+   </main>
 </div>
-
+<script>
+   $(document).ready(function() {
+       $('.file_upload_form_submit').click(function(e) {
+           e.preventDefault();
+           var form = $('#file_upload_form')[0];
+           var data = new FormData(form);
+          Spinner()
+           $.ajax({
+               type: 'POST',
+               url: window.location.pathname,
+               data: data,
+               processData: false,
+               contentType: false,
+               csrfmiddlewaretoken: '{{ csrf_token }}',
+               success: function(response) {
+                  console.log(response)
+                  $('#response_div').html(response)
+   
+                  $('#index_div').addClass('d-none')
+                  $("div").removeClass("overlay");
+   
+                  
+               },
+               error: function(xhr, status, error) {
+                   console.log(xhr.responseText);
+               }
+           });
+       });
+   });
+</script>
 <script> 
    function Spinner()
    {
@@ -146,14 +107,20 @@
    {
    $("#error_div").show();
    $("#days_input_error").hide();
-
+   
    return false;
+   }
+   else if(n_days > "30"){
+      $("#max_days_error").show();
+      $("#error_div").hide();
+   
+      return false;
    }
 
    else if(n_days == ""){
       $("#days_input_error").show();
       $("#error_div").hide();
-
+   
       return false;
    }
    else 
@@ -161,27 +128,29 @@
    $("#spinner_div").show();
    $("#days_input_error").hide();
    $("#error_div").hide();
+   $("#max_days_error").hide();
+
    var div= document.createElement("div");
     div.className += "overlay";
     document.body.appendChild(div);
    return true; 
    }
    }
-
+   
    $('#file-upload').change(function() {
       var i = $(this).prev('label').clone();
       var file = $('#file-upload')[0].files[0].name;
       console.log(file)
       $('#file_name').text(file)
     });
-
-
-
+   
+   
+   
     let fileInput = document.getElementById("file-upload");
     let fileSubmit = document.getElementById("submit-button");
- 
+   
     fileInput.addEventListener("change", function () {
- 
+   
      if (fileInput.files.length > 0) {
        // Check if any file is selected.
            for (const i = 0; i <= fileInput.files.length - 1; i++) {
@@ -192,27 +161,27 @@
                if (file <= 10) {
                    $("#min_size_error").show();
                    $("#max_size_error").hide();
-
+   
                    fileSubmit.disabled = true;
- 
+   
                } else if (file > 200) {
                    $("#max_size_error").show();
                    $("#min_size_error").hide();
-
+   
                    fileSubmit.disabled = true;
- 
+   
                } else {
                 $("#min_size_error").hide();
                 $("#max_size_error").hide();
- 
+   
                 fileSubmit.disabled = false;
- 
- 
+   
+   
                }
            }
           }
        });
-
-
+   
+   
 </script>  
 {% endblock %}
