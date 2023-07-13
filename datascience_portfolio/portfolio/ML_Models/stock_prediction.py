@@ -18,6 +18,7 @@ def predict_stock_prices(path, plot_image_name,n_periods):
         warnings.filterwarnings("ignore")
         df = new_data.copy()
         df.columns = map(str.lower, df.columns)
+        df.dropna(inplace=True)
         df['date'] = pd.to_datetime(df['date'])
         df = df.sort_values(by='date')
         data= df.copy()
