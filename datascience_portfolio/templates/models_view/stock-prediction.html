@@ -34,20 +34,20 @@
                            <i class="fa fa-download" aria-hidden="true"></i>
                            <div>Upload CSV file only.</div>
                            <div id="notimage" class="hidden">Please select an image</div>
-                           <span id="file-upload-btn" class="btn btn-">Select a file</span>
+                           <span  id="file-upload-btn" class="btn btn-">Select a file</span>
                            <p><img id="output" width="200" /></p>
                            <p id ="file_name" ></p>
                         </div>
                         <div id="spinner_div" class="spinner-border m-5 "  style="display: none;" role="status">
                            <span class="visually-hidden">Loading...</span>
                         </div>
-                        <div id="response" class="">
+                        {% comment %} <div id="response" class="">
                            <div id="messages"></div>
                            <div class="copyURL">
                               <div>Please enter no. of days.</div>
                               <input type="text" name="days" id="days" max="30" class="formtext" placeholder="Enter days in number" onkeypress="return /[0-9]/i.test(event.key)"/>
                            </div>
-                        </div>
+                        </div> {% endcomment %}
                         <span id="error_div" style="display: none;color:red;">Please Upload the file, File cannot be empty.</span>
                         <span id="days_input_error" style="display: none;color:red;">Days field can not be blank.</span>
                         <span id="min_size_error" style="display: none;color:red;"> Please select a file greator than 10KB.</span>
@@ -83,7 +83,6 @@
                contentType: false,
                csrfmiddlewaretoken: '{{ csrf_token }}',
                success: function(response) {
-                  console.log(response)
                   $('#response_div').html(response)
    
                   $('#index_div').addClass('d-none')
@@ -92,7 +91,6 @@
                   
                },
                error: function(xhr, status, error) {
-                   console.log(xhr.responseText);
                }
            });
        });
@@ -102,33 +100,18 @@
    function Spinner()
    {
    var empt = document.forms["form1"]["csv_upload"].value;
-   var n_days = document.forms["form1"]["days"].value;
    if (empt == "")
    {
    $("#error_div").show();
-   $("#days_input_error").hide();
+
    
    return false;
    }
-   else if(n_days > "30"){
-      $("#max_days_error").show();
-      $("#error_div").hide();
-   
-      return false;
-   }
-
-   else if(n_days == ""){
-      $("#days_input_error").show();
-      $("#error_div").hide();
-   
-      return false;
-   }
+  
    else 
    {
    $("#spinner_div").show();
-   $("#days_input_error").hide();
    $("#error_div").hide();
-   $("#max_days_error").hide();
 
    var div= document.createElement("div");
     div.className += "overlay";
@@ -140,10 +123,13 @@
    $('#file-upload').change(function() {
       var i = $(this).prev('label').clone();
       var file = $('#file-upload')[0].files[0].name;
-      console.log(file)
       $('#file_name').text(file)
+      $("#error_div").hide();
+
     });
    
+
+  
    
    
     let fileInput = document.getElementById("file-upload");

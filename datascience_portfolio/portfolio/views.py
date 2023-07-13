@@ -114,7 +114,7 @@ class StockPredictions(View):
         )
         path = upload_object.stock_file.path
         plot_image_name = "graph.png"
-        predicted_result = predict_stock_prices(path,plot_image_name, n_periods=int(request.POST.get('days')))
+        predicted_result = predict_stock_prices(path,plot_image_name, n_periods=int(30))
         return render(request,'components/stock_response.html',{"predicted_result":predicted_result,"resulted_image":plot_image_name})
 
 
