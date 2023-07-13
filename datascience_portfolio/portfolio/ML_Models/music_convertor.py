@@ -1,214 +1,175 @@
 
-from music21 import converter, instrument, note, chord
-import warnings
-warnings.filterwarnings("ignore")
-import numpy as np
-import matplotlib.pyplot as plt
-import pickle
 import os
-import pandas as pd
-import tensorflow as tf
-from tensorflow import keras
-from keras.models import load_model
-from tensorflow.keras.utils import to_categorical
-from music21 import converter, instrument, note, chord, stream, chord, tempo
 from django.conf import settings
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras import layers
+import music21
+import pygame
+import time
+
+# Define the DQN agent class
+class DQNAgent:
+    def __init__(self, state_size, action_size):
+        self.state_size = state_size
+        self.action_size = action_size
+        self.memory = []
+        self.gamma = 0.95  # discount rate
+        self.epsilon = 1.0  # exploration rate
+        self.epsilon_min = 0.01
+        self.epsilon_decay = 0.995
+        self.learning_rate = 0.001
+        self.model = self._build_model()
+
+    def _build_model(self):
+        # Neural network to approximate the Q-function
+        model = tf.keras.Sequential()
+        model.add(layers.Dense(128, input_dim=self.state_size, activation='relu'))
+        model.add(layers.Dense(64, activation='relu'))
+        model.add(layers.Dense(self.action_size, activation='linear'))
+        model.compile(loss='mse', optimizer=tf.keras.optimizers.Adam(lr=self.learning_rate))
+        return model
+
+    def remember(self, state, action, reward, next_state, done):
+        self.memory.append((state, action, reward, next_state, done))
+
+    def act(self, state):
+        # Epsilon-greedy policy
+        if np.random.rand() <= self.epsilon:
+            return np.random.randint(self.action_size)
+        q_values = self.model.predict(state)
+        return np.argmax(q_values[0])
+
+    def replay(self, batch_size):
+        if len(self.memory) < batch_size:
+            return
+
+        minibatch = np.random.choice(len(self.memory), batch_size, replace=False)
+        for i in minibatch:
+            state, action, reward, next_state, done = self.memory[i]
+            target = reward
+            if not done:
+                target = (reward + self.gamma * np.amax(self.model.predict(next_state)[0]))
+            q_values = self.model.predict(state)
+            q_values[0][action] = target
+            self.model.fit(state, q_values, epochs=1, verbose=0)
+
+        if self.epsilon > self.epsilon_min:
+            self.epsilon *= self.epsilon_decay
 
 
+# Define the function to preprocess the input data
+def preprocess_data(notes):
+    # Map notes to integers
+    pitchnames = sorted(set(item for item in notes))
+    note_to_int = {note: number for number, note in enumerate(pitchnames)}
+    int_to_note = {number: note for number, note in enumerate(pitchnames)}
+    sequence_length = 100
+    network_input = []
+    network_output = []
+    for i in range(0, len(notes) - sequence_length, 1):
+        sequence_in = notes[i:i + sequence_length]
+        sequence_out = notes[i + sequence_length]
+        network_input.append([note_to_int[char] for char in sequence_in])
+        network_output.append(note_to_int[sequence_out])
+    n_patterns = len(network_input)
+    network_input = np.reshape(network_input, (n_patterns, sequence_length, 1))
+    network_input = network_input / float(len(set(notes)))
+    network_output = tf.keras.utils.to_categorical(network_output)
+    return network_input, network_output, note_to_int, int_to_note
 
-def music_conversion(file):
+# Define the function to train the DQN agent
+def train_agent(agent, network_input, network_output, epochs, batch_size):
+    for i in range(epochs):
+#         print('Epoch {}/{}'.format(i + 1, epochs))
+        agent.replay(batch_size)
+
+# Define the function to generate new music
+def music_conversion(midi_file_path):
     try:
+        # Load MIDI file
+        midi_file = music21.converter.parse(midi_file_path)
+
+        # Extract notes and chords from MIDI file
         notes = []
-        midi = converter.parse(file)
-
-        # Extract notes from the MIDI file
-        parts = instrument.partitionByInstrument(midi)
-        if parts:
-            notes_to_parse = parts.parts[0].recurse()
-        else:
-            notes_to_parse = midi.flat.notes
-
-        for element in notes_to_parse:
-            if isinstance(element, note.Note):
+        for element in midi_file.flat:
+            if isinstance(element, music21.note.Note):
                 notes.append(str(element.pitch))
-            elif isinstance(element, chord.Chord):
+            elif isinstance(element, music21.chord.Chord):
                 notes.append('.'.join(str(n) for n in element.normalOrder))
-        n_vocab = len(set(notes))
-        pitchnames = sorted(set(item for item in notes))
-        sequence_length = 50
-
-        note_to_int = dict((note, number) for number, note in enumerate(pitchnames))
-        network_input = []
-        network_output = []
-        for i in range(0, len(notes) - sequence_length, 1):
-            sequence_in = notes[i:i + sequence_length]
-            sequence_out = notes[i + sequence_length]
-            network_input.append([note_to_int[char] for char in sequence_in])
-            network_output.append(note_to_int[sequence_out])
-        n_patterns = len(network_input)
-        network_input = np.reshape(network_input, (n_patterns, sequence_length, 1))
-        network_input = network_input / float(n_vocab)
-        network_output = to_categorical(network_output)
-        with open(os.path.join(settings.BASE_DIR,settings.MUSIC_GENERATOR_MODEL), 'rb') as f:
-            int_to_note = pickle.load(f)
-        model = load_model( os.path.join(settings.BASE_DIR,settings.MUSIC_GENERATOR_WEIGHT))
-        """ Generate notes from the neural network based on a sequence of notes """
-        start = np.random.randint(0, len(network_input)-1)
-
-        
-
-        pattern = network_input[start]
-        prediction_output = []
-        for note_index in range(200):
-            prediction_input = np.reshape(pattern, (1, len(pattern), 1))
-            prediction_input = prediction_input 
-
-            prediction = model.predict(prediction_input, verbose=0)
-
-            index = np.argmax(prediction)
-            if index == pattern[-1] and index== pattern[-2]:
-                index = np.random.randint(0,n_vocab-1)
             
-            result = int_to_note[index]
-            prediction_output.append(result)
+        # Check if the notes list is empty
+        if not notes:
+            raise ValueError("Invalid MIDI file. No notes or chords found.")
 
-            pattern = np.append(pattern, index)
-            pattern = pattern[1:len(pattern)]
-    
-        midi = converter.parse(file)  #read file
-        parts = instrument.partitionByInstrument(midi)
-        Instr= []
-        li=[]
-        value_list = list()
-        for i in parts:
-            ins_1 = i.getInstrument()
-            li.append(ins_1)
+        # Preprocess the input data
+        network_input, network_output, note_to_int, int_to_note = preprocess_data(notes)
 
-        double_list = list()
-        for hth in li:
-            aa  = str(hth).replace(" ", "")
-            double_list.append(aa)
+        # Reshape the network_output array to have an extra dimension
+        network_output = np.reshape(network_output, (*network_output.shape, 1))
 
-        m=[]
-        for i in double_list:
-            if len(i.split(":"))== 2:
-                m.append(i.split(":")[1])
+        # Set the input and output sizes
+        state_size = network_input.shape[1]
+        action_size = len(note_to_int)
 
+        # Initialize the DQN agent
+        agent = DQNAgent(state_size, action_size)
+
+        # Train the DQN agent
+        epochs = 100
+        batch_size = 64
+        train_agent(agent, network_input, network_output, epochs, batch_size)
+
+        # Generate new music using the DQN agent
+        generated_notes = []
+        start_note = np.random.randint(0, len(network_input) - 1)
+        pattern = network_input[start_note]
+
+        for i in range(500):
+            pattern_reshaped = np.reshape(pattern, (1, *pattern.shape))
+            action = agent.act(pattern_reshaped)
+            result = int_to_note[action]
+            generated_notes.append(result)
+
+            pattern = np.append(pattern, action)
+            pattern = pattern[1:]
+
+        # Create a new MIDI file with the generated notes
+        offset = 0
+        output_notes = []
+        for pattern in generated_notes:
+            if '.' in pattern:
+                notes_in_chord = pattern.split('.')
+                notes = []
+                for current_note in notes_in_chord:
+                    new_note = music21.note.Note(int(current_note))
+                    new_note.storedInstrument = music21.instrument.Piano()
+                    notes.append(new_note)
+                new_chord = music21.chord.Chord(notes)
+                new_chord.offset = offset
+                output_notes.append(new_chord)
             else:
-                m.append(i)
-        output_file = add_instruments(m, pattern, prediction_output)
-        return output_file
-    except:
-        return "invalid_file"
+                try:
+                    new_note = music21.note.Note(pattern)
+                except music21.pitch.PitchException:
+                    new_note = music21.note.Rest()
+                new_note.offset = offset
+                new_note.storedInstrument = music21.instrument.Piano()
+                output_notes.append(new_note)
 
-        
+            offset += 0.5
 
+        # Save the generated music as a new MIDI file
+        # new_midi_file_path = midi_file_path.replace('.mid', 'output_music.mid')
+        new_midi_file_path = os.path.join(settings.BASE_DIR,'static/music') +'/output_music.mid'
 
+        midi_stream = music21.stream.Stream(output_notes)
+        midi_stream.write('midi', fp=new_midi_file_path)
 
-# MUlti - instruments
-def add_instruments(m, pattern, prediction_output):
-    offset = 0
-    output_notes = []
-    for pattern in prediction_output:
-        if ('.' in pattern) or pattern.isdigit():
-            notes_in_chord = pattern.split('.')
-            notes = []
-            for current_note in notes_in_chord:
-                for i in m:
-                    if i == 'Piano':
-                        output_notes.append(instrument.Piano())
-                    if i == 'ElectricGuitar':
-                        output_notes.append(instrument.ElectricGuitar())
-                       
-                    if i == 'Percussion':
-                        output_notes.append(instrument.Percussion())
-                    if i == 'AcousticBass':
-                        output_notes.append(instrument.AcousticBass())
-                    if i =="Flute":
-                        output_notes.append(instrument.Flute())
-                    if i == "Violin":
-                        output_notes.append(instrument.Violin())
-                    if i == "Choir":
-                        output_notes.append(instrument.Choir())
-                    if i == "StringInstrument":
-                        output_notes.append(instrument.StringInstrument())
-                    if i == "BassDrum":
-                        output_notes.append(instrument.BassDrum())
-                    if i == "ElectricPiano":
-                        output_notes.append(instrument.ElectricPiano())
-                    if i == "Harp":
-                        output_notes.append(instrument.Harp())
-                    if i == "Guitar":
-                        output_notes.append(instrument.Guitar())
-                    if i == "Trumpet":
-                        output_notes.append(instrument.Trumpet())
-                    if i == "Organ":
-                        output_notes.append(instrument.Organ())
-                    if i == "ElectricOrgan":
-                        output_notes.append(instrument.ElectricOrgan())
-                    if i == "AcousticPiano":
-                        output_notes.append(instrument.AcousticPiano())
-                cn=int(current_note) 
-                new_note=note.Note(cn)
-                notes.append(new_note)
-            new_chord = chord.Chord(notes)
-            new_chord.offset = offset
-            output_notes.append(new_chord)
-        else:
-            for i in m:
-                    if i == 'Piano':
-                        output_notes.append(instrument.Piano())
-                    if i == 'ElectricGuitar':
-                        output_notes.append(instrument.ElectricGuitar())   
-                    if i == 'Percussion':
-                        output_notes.append(instrument.Percussion())
-                        
-                    if i == 'AcousticBass':
-                        output_notes.append(instrument.AcousticBass())
-                    if i =="Flute":
-                        output_notes.append(instrument.Flute())
-                    if i == "Violin":
-                        output_notes.append(instrument.Violin())
-                    if i == "Choir":
-                        output_notes.append(instrument.Choir())
-                    if i == "StringInstrument":
-                        output_notes.append(instrument.StringInstrument())
-                    if i == "BassDrum":
-                        output_notes.append(instrument.BassDrum())
-                    if i == "ElectricPiano":
-                        output_notes.append(instrument.ElectricPiano())
-                    if i == "Harp":
-                        output_notes.append(instrument.Harp())
-                    if i == "Guitar":
-                        output_notes.append(instrument.Guitar())
-                    if i == "Trumpet":
-                        output_notes.append(instrument.Trumpet())
-                    if i == "Organ":
-                        output_notes.append(instrument.Organ())
-                    if i == "ElectricOrgan":
-                        output_notes.append(instrument.ElectricOrgan())
-                    if i == "AcousticPiano":
-                        output_notes.append(instrument.AcousticPiano())
-                   
-
-
-            new_note = note.Note(pattern)
-            new_note.offset = offset
-
-            output_notes.append(new_note)
-    scaling_factor = 0.5 # Adjust the scaling factor as desired
-
-    # Scale the durations of notes and chords
-    for element in output_notes:
-        if isinstance(element, note.Note) or isinstance(element, chord.Chord):
-            element.duration.quarterLength *= scaling_factor
-     # output_notes
-    midi_stream = stream.Stream()
-    midi_stream.append(output_notes)
-    midi_stream.insert(0, tempo.MetronomeMark(number=60))  #take any value from list [10,20, 30, 40,50,60,70,90, 100.....160] to add dynamic tempo
-    output_file = os.path.join(settings.BASE_DIR,'static/music') +'/output_music.mid'
-    midi_stream.write('midi', fp=output_file)
-    return output_file
+        return new_midi_file_path
+    
+    except Exception as e:
+        return "Invalid File: " + str(e)
 
 
 
